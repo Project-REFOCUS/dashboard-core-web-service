@@ -1,0 +1,7 @@
+# JetBrains
+# =========
+.idea/
+
+# Local Properties
+# =========
+application-local.properties
