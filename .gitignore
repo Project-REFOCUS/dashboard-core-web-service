@@ -5,3 +5,8 @@
 # Local Properties
 # =========
 application-local.properties
+
+# Gradle
+# ========
+.gradle/
+build/
