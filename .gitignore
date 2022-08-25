@@ -10,3 +10,4 @@ application-local.properties
 # ========
 .gradle/
 build/
+*.jar

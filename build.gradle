@@ -17,3 +17,16 @@ dependencies {
     implementation group: 'commons-codec', name: 'commons-codec', version: '1.15'
     implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.30'
 }
+
+task copy {
+    doLast {
+        copy {
+            from 'build/libs/dashboard-core-web-service-' + version + '.jar'
+            into 'docker'
+
+            rename { String filename ->
+                filename.replace('dashboard-core-web-service-' + version + '.jar', 'dashboard-core-web-service.jar')
+            }
+        }
+    }
+}
