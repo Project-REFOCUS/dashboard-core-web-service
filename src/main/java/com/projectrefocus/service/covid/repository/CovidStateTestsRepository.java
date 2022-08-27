@@ -14,7 +14,7 @@ public interface CovidStateTestsRepository extends JpaRepository<CovidStateTests
           "INNER JOIN FETCH CalendarDateEntity cdate ON cdate.id = cste.date.id " +
           "INNER JOIN FETCH CalendarMonthEntity cmonth ON cmonth.id = cdate.month.id " +
           "INNER JOIN FETCH CalendarDayEntity cday ON cday.id = cdate.day.id " +
-          "where se.id = :stateId"
+          "where se.shortName in :states"
     )
-    List<CovidStateTestsEntity> getAllByStateId(Byte stateId);
+    List<CovidStateTestsEntity> getDailyTestsForStates(List<String> states);
 }

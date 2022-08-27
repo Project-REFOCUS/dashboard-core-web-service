@@ -29,24 +29,24 @@ public class CovidServiceImpl implements CovidService {
 
 
     @Override
-    public List<CovidStateCasesDto> getCasesByState(Byte stateId) {
-        return covidStateCasesRepository.getAllByStateId(stateId)
+    public List<CovidStateCasesDto> getCasesByState(List<String> states) {
+        return covidStateCasesRepository.getDailyCasesForStates(states)
                 .stream()
                 .map(CovidStateCasesEntity::toDto)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<CovidStateDeathsDto> getDeathsByState(Byte stateId) {
-        return covidStateDeathsRepository.getAllByStateId(stateId)
+    public List<CovidStateDeathsDto> getDeathsByState(List<String> states) {
+        return covidStateDeathsRepository.getDailyDeathsForStates(states)
                 .stream()
                 .map(CovidStateDeathsEntity::toDto)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<CovidStateTestsDto> getTestsByState(Byte stateId) {
-        return covidStateTestsRepository.getAllByStateId(stateId)
+    public List<CovidStateTestsDto> getTestsByState(List<String> states) {
+        return covidStateTestsRepository.getDailyTestsForStates(states)
                 .stream()
                 .map(CovidStateTestsEntity::toDto)
                 .collect(Collectors.toList());

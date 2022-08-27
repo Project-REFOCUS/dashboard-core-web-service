@@ -22,17 +22,17 @@ public class CovidController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/cases")
-    public List<CovidStateCasesDto> getCovidCases(@RequestParam(name = "stateId") Byte stateId) {
-        return covidService.getCasesByState(stateId);
+    public List<CovidStateCasesDto> getCovidCases(@RequestParam(name = "states") List<String> states) {
+        return covidService.getCasesByState(states);
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/deaths")
-    public List<CovidStateDeathsDto> getCovidDeaths(@RequestParam(name = "stateId") Byte stateId) {
-        return covidService.getDeathsByState(stateId);
+    public List<CovidStateDeathsDto> getCovidDeaths(@RequestParam(name = "states") List<String> states) {
+        return covidService.getDeathsByState(states);
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/tests")
-    public List<CovidStateTestsDto> getCovidTests(@RequestParam(name = "stateId") Byte stateId) {
-        return covidService.getTestsByState(stateId);
+    public List<CovidStateTestsDto> getCovidTests(@RequestParam(name = "states") List<String> states) {
+        return covidService.getTestsByState(states);
     }
 }

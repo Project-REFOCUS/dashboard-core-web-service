@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface CovidService {
 
-    List<CovidStateCasesDto> getCasesByState(Byte stateId);
-    List<CovidStateDeathsDto> getDeathsByState(Byte stateId);
-    List<CovidStateTestsDto> getTestsByState(Byte stateId);
+    List<CovidStateCasesDto> getCasesByState(List<String> states);
+    List<CovidStateDeathsDto> getDeathsByState(List<String> states);
+    List<CovidStateTestsDto> getTestsByState(List<String> states);
 }
