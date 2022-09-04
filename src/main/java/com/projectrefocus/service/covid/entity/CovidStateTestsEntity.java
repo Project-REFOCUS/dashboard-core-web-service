@@ -1,7 +1,7 @@
 package com.projectrefocus.service.covid.entity;
 
 import com.projectrefocus.service.calendar.entity.CalendarDateEntity;
-import com.projectrefocus.service.covid.dto.CovidStateTestsDto;
+import com.projectrefocus.service.covid.dto.CovidStateMetricDto;
 import com.projectrefocus.service.geography.entity.StateEntity;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -67,10 +67,10 @@ public class CovidStateTestsEntity {
         return state;
     }
 
-    public CovidStateTestsDto toDto() {
-        CovidStateTestsDto dto = new CovidStateTestsDto();
+    public CovidStateMetricDto toDto() {
+        CovidStateMetricDto dto = new CovidStateMetricDto();
         dto.setId(id);
-        dto.setTests(tests);
+        dto.setValue(tests);
         dto.setDate(date.getDate());
         dto.setState(state.getName());
 

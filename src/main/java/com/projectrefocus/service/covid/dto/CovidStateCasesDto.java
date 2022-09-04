@@ -1,15 +1,13 @@
 package com.projectrefocus.service.covid.dto;
 
-import java.util.Date;
-
 public class CovidStateCasesDto extends CovidStateMetricDto {
-    private Integer cases;
+    private Long cases;
 
-    public void setCases(Integer cases) {
+    public void setCases(Long cases) {
         this.cases = cases;
     }
 
-    public Integer getCases() {
+    public Long getCases() {
         return cases;
     }
 }

@@ -2,11 +2,13 @@ package com.projectrefocus.service.covid.dto;
 
 import java.util.Date;
 
-public abstract class CovidStateMetricDto {
+public class CovidStateMetricDto {
 
     private Integer id;
     private Date date;
     private String state;
+
+    private Integer value;
 
     public void setId(Integer id) {
         this.id = id;
@@ -30,5 +32,13 @@ public abstract class CovidStateMetricDto {
 
     public String getState() {
         return state;
+    }
+
+    public void setValue(Integer value) {
+        this.value = value;
+    }
+
+    public Integer getValue() {
+        return value;
     }
 }
