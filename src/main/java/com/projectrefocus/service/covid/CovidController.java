@@ -1,7 +1,6 @@
 package com.projectrefocus.service.covid;
 
 import com.projectrefocus.service.covid.dto.CovidMetricDto;
-import com.projectrefocus.service.covid.dto.CovidStateMetricDto;
 import com.projectrefocus.service.covid.service.CovidService;
 import com.projectrefocus.service.request.enums.DataOrientation;
 import org.springframework.format.annotation.DateTimeFormat;
