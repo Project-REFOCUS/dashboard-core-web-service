@@ -15,7 +15,7 @@ public interface CovidStateTestsRepository extends JpaRepository<CovidStateTests
                     "INNER JOIN FETCH CalendarDateEntity cdate ON cdate.id = cste.date.id " +
                     "INNER JOIN FETCH CalendarMonthEntity cmonth ON cmonth.id = cdate.month.id " +
                     "INNER JOIN FETCH CalendarDayEntity cday ON cday.id = cdate.day.id " +
-                    "WHERE cdate.date >= :startDate"
+                    "WHERE cdate.date > :startDate"
     )
     List<CovidStateTestsEntity> getAllTestsOnOrAfterDate(Date startDate);
 
@@ -25,7 +25,7 @@ public interface CovidStateTestsRepository extends JpaRepository<CovidStateTests
                     "INNER JOIN FETCH CalendarDateEntity cdate ON cdate.id = cste.date.id " +
                     "INNER JOIN FETCH CalendarMonthEntity cmonth ON cmonth.id = cdate.month.id " +
                     "INNER JOIN FETCH CalendarDayEntity cday ON cday.id = cdate.day.id " +
-                    "WHERE cdate.date >= :startDate AND se.shortName IN (:states)"
+                    "WHERE cdate.date > :startDate AND se.shortName IN (:states)"
     )
     List<CovidStateTestsEntity> getStateCasesOnOrAfterDate(List<String> states, Date startDate);
 }

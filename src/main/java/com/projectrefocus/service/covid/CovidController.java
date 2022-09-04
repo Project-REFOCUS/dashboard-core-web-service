@@ -24,21 +24,24 @@ public class CovidController {
     @RequestMapping(method = RequestMethod.GET, value = "/cases")
     public List<CovidStateMetricDto> getCovidCases(
             @RequestParam(name = "states") List<String> states,
-            @RequestParam(name = "startDate") @DateTimeFormat(pattern = "yyyy-mm-dd") Date startDate) {
+            // TODO: Look into a solution for fixing timezone issue creating off by one error
+            @RequestParam(name = "startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date startDate) {
         return covidService.getCovidCasesData(states, startDate);
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/deaths")
     public List<CovidStateMetricDto> getCovidDeaths(
             @RequestParam(name = "states") List<String> states,
-            @RequestParam(name = "startDate") @DateTimeFormat(pattern = "yyyy-mm-dd") Date startDate) {
+            // TODO: Look into a solution for fixing timezone issue creating off by one error
+            @RequestParam(name = "startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date startDate) {
         return covidService.getCovidDeathsData(states, startDate);
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/tests")
     public List<CovidStateMetricDto> getCovidTests(
             @RequestParam(name = "states") List<String> states,
-            @RequestParam(name = "startDate") @DateTimeFormat(pattern = "yyyy-mm-dd") Date startDate) {
+            // TODO: Look into a solution for fixing timezone issue creating off by one error
+            @RequestParam(name = "startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date startDate) {
         return covidService.getCovidTestsData(states, startDate);
     }
 }

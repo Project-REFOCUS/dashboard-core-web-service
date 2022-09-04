@@ -16,7 +16,7 @@ public interface CovidStateDeathsRepository extends JpaRepository<CovidStateDeat
                     "INNER JOIN FETCH CalendarDateEntity cdate ON cdate.id = csde.date.id " +
                     "INNER JOIN FETCH CalendarMonthEntity cmonth ON cmonth.id = cdate.month.id " +
                     "INNER JOIN FETCH CalendarDayEntity cday ON cday.id = cdate.day.id " +
-                    "WHERE cdate.date >= :startDate"
+                    "WHERE cdate.date > :startDate"
     )
     List<CovidStateDeathsEntity> getAllDeathsOnOrAfterDate(Date startDate);
 
@@ -26,7 +26,7 @@ public interface CovidStateDeathsRepository extends JpaRepository<CovidStateDeat
                     "INNER JOIN FETCH CalendarDateEntity cdate ON cdate.id = csde.date.id " +
                     "INNER JOIN FETCH CalendarMonthEntity cmonth ON cmonth.id = cdate.month.id " +
                     "INNER JOIN FETCH CalendarDayEntity cday ON cday.id = cdate.day.id " +
-                    "WHERE cdate.date >= :startDate AND se.shortName IN (:states)"
+                    "WHERE cdate.date > :startDate AND se.shortName IN (:states)"
     )
     List<CovidStateDeathsEntity> getStateDeathsOnOrAfterDate(List<String> states, Date startDate);
 }
