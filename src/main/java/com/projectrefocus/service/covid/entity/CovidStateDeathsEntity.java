@@ -1,6 +1,7 @@
 package com.projectrefocus.service.covid.entity;
 
 import com.projectrefocus.service.calendar.entity.CalendarDateEntity;
+import com.projectrefocus.service.covid.dto.CovidMetricDto;
 import com.projectrefocus.service.covid.dto.CovidStateDeathsDto;
 import com.projectrefocus.service.covid.dto.CovidStateMetricDto;
 import com.projectrefocus.service.geography.entity.StateEntity;
@@ -68,12 +69,10 @@ public class CovidStateDeathsEntity {
         return state;
     }
 
-    public CovidStateMetricDto toDto() {
-        CovidStateMetricDto dto = new CovidStateMetricDto();
-        dto.setId(id);
+    public CovidMetricDto toDto() {
+        CovidMetricDto dto = new CovidMetricDto();
         dto.setValue(deaths);
         dto.setDate(date.getDate());
-        dto.setState(state.getName());
 
         return dto;
     }

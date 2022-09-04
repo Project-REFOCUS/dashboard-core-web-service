@@ -1,7 +1,9 @@
 package com.projectrefocus.service.covid;
 
+import com.projectrefocus.service.covid.dto.CovidMetricDto;
 import com.projectrefocus.service.covid.dto.CovidStateMetricDto;
 import com.projectrefocus.service.covid.service.CovidService;
+import com.projectrefocus.service.request.enums.DataOrientation;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,26 +24,29 @@ public class CovidController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/cases")
-    public List<CovidStateMetricDto> getCovidCases(
+    public List<CovidMetricDto> getCovidCases(
             @RequestParam(name = "states") List<String> states,
+            @RequestParam(name = "orientation") DataOrientation orientation,
             // TODO: Look into a solution for fixing timezone issue creating off by one error
             @RequestParam(name = "startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date startDate) {
-        return covidService.getCovidCasesData(states, startDate);
+        return covidService.getCovidCasesData(states, orientation, startDate);
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/deaths")
-    public List<CovidStateMetricDto> getCovidDeaths(
+    public List<CovidMetricDto> getCovidDeaths(
             @RequestParam(name = "states") List<String> states,
+            @RequestParam(name = "orientation") DataOrientation orientation,
             // TODO: Look into a solution for fixing timezone issue creating off by one error
             @RequestParam(name = "startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date startDate) {
-        return covidService.getCovidDeathsData(states, startDate);
+        return covidService.getCovidDeathsData(states, orientation, startDate);
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/tests")
-    public List<CovidStateMetricDto> getCovidTests(
+    public List<CovidMetricDto> getCovidTests(
             @RequestParam(name = "states") List<String> states,
+            @RequestParam(name = "orientation") DataOrientation orientation,
             // TODO: Look into a solution for fixing timezone issue creating off by one error
             @RequestParam(name = "startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date startDate) {
-        return covidService.getCovidTestsData(states, startDate);
+        return covidService.getCovidTestsData(states, orientation, startDate);
     }
 }

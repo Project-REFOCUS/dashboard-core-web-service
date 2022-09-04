@@ -20,6 +20,22 @@ public interface CovidStateCasesRepository extends JpaRepository<CovidStateCases
     List<CovidStateCasesEntity> getAllCasesOnOrAfterDate(Date startDate);
 
     @Query(
+            "SELECT CAST(SUM(csce.cases) AS integer) FROM CovidStateCasesEntity csce " +
+            "INNER JOIN StateEntity se ON se.id = csce.state.id " +
+            "INNER JOIN CalendarDateEntity cdate ON cdate.id = csce.date.id " +
+            "WHERE cdate.date <= :targetDate"
+    )
+    Integer aggregatedCasesUntilDate(Date targetDate);
+
+    @Query(
+            "SELECT CAST(SUM(csce.cases) AS integer) FROM CovidStateCasesEntity csce " +
+            "INNER JOIN StateEntity se ON se.id = csce.state.id " +
+            "INNER JOIN CalendarDateEntity cdate ON cdate.id = csce.date.id " +
+            "WHERE se.shortName IN (:states) AND cdate.date <= :targetDate"
+    )
+    Integer aggregatedStateCasesUntilDate(List<String> states, Date targetDate);
+
+    @Query(
             "SELECT csce, se, cdate, cmonth, cday FROM CovidStateCasesEntity csce " +
             "INNER JOIN FETCH StateEntity se ON se.id = csce.state.id " +
             "INNER JOIN FETCH CalendarDateEntity cdate ON cdate.id = csce.date.id " +

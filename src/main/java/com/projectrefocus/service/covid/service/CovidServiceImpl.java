@@ -1,5 +1,6 @@
 package com.projectrefocus.service.covid.service;
 
+import com.projectrefocus.service.covid.dto.CovidMetricDto;
 import com.projectrefocus.service.covid.dto.CovidStateMetricDto;
 import com.projectrefocus.service.covid.entity.CovidStateCasesEntity;
 import com.projectrefocus.service.covid.entity.CovidStateDeathsEntity;
@@ -7,8 +8,11 @@ import com.projectrefocus.service.covid.entity.CovidStateTestsEntity;
 import com.projectrefocus.service.covid.repository.CovidStateCasesRepository;
 import com.projectrefocus.service.covid.repository.CovidStateDeathsRepository;
 import com.projectrefocus.service.covid.repository.CovidStateTestsRepository;
+import com.projectrefocus.service.covid.utils.Transformer;
+import com.projectrefocus.service.request.enums.DataOrientation;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,36 +30,61 @@ public class CovidServiceImpl implements CovidService {
         this.covidStateTestsRepository = covidStateTestsRepository;
     }
 
-    public List<CovidStateMetricDto> getCovidCasesData(List<String> states, Date startDate) {
-        List<CovidStateCasesEntity> cases = states.isEmpty() ?
+    public List<CovidMetricDto> getCovidCasesData(List<String> states, DataOrientation orientation, Date startDate) {
+        boolean fetchForAllStates = states.isEmpty();
+        List<CovidStateCasesEntity> cases = fetchForAllStates ?
                 covidStateCasesRepository.getAllCasesOnOrAfterDate(startDate) :
                 covidStateCasesRepository.getStateCasesOnOrAfterDate(states, startDate);
+        switch (orientation) {
+            case cumulative:
+                Integer startingAggregate = fetchForAllStates ?
+                        covidStateCasesRepository.aggregatedCasesUntilDate(startDate) :
+                        covidStateCasesRepository.aggregatedStateCasesUntilDate(states, startDate);
+                return Transformer.toCumulativeCases(cases, startingAggregate);
 
-        return cases
-                .stream()
-                .map(CovidStateCasesEntity::toDto)
-                .collect(Collectors.toList());
+            case daily:
+                return cases.stream().map(CovidStateCasesEntity::toDto).collect(Collectors.toList());
+        }
+
+        return new ArrayList<>();
     }
 
-    public List<CovidStateMetricDto> getCovidDeathsData(List<String> states, Date startDate) {
-        List<CovidStateDeathsEntity> deaths = states.isEmpty() ?
+    public List<CovidMetricDto> getCovidDeathsData(List<String> states, DataOrientation orientation, Date startDate) {
+        boolean fetchForAllStates = states.isEmpty();
+        List<CovidStateDeathsEntity> deaths = fetchForAllStates ?
                 covidStateDeathsRepository.getAllDeathsOnOrAfterDate(startDate) :
                 covidStateDeathsRepository.getStateDeathsOnOrAfterDate(states, startDate);
+        switch (orientation) {
+            case cumulative:
+                Integer startingAggregate = fetchForAllStates ?
+                        covidStateDeathsRepository.aggregatedDeathsUntilDate(startDate) :
+                        covidStateDeathsRepository.aggregatedStateDeathsUntilDate(states, startDate);
+                return Transformer.toCumulativeDeaths(deaths, startingAggregate);
 
-        return deaths
-                .stream()
-                .map(CovidStateDeathsEntity::toDto)
-                .collect(Collectors.toList());
+            case daily:
+                return deaths.stream().map(CovidStateDeathsEntity::toDto).collect(Collectors.toList());
+        }
+
+        return new ArrayList<>();
     }
 
-    public List<CovidStateMetricDto> getCovidTestsData(List<String> states, Date startDate) {
+    public List<CovidMetricDto> getCovidTestsData(List<String> states, DataOrientation orientation, Date startDate) {
+        boolean fetchForAllStates = states.isEmpty();
         List<CovidStateTestsEntity> tests = states.isEmpty() ?
                 covidStateTestsRepository.getAllTestsOnOrAfterDate(startDate) :
                 covidStateTestsRepository.getStateCasesOnOrAfterDate(states, startDate);
+        switch (orientation) {
+            case cumulative:
+                Integer startingAggregate = fetchForAllStates ?
+                        covidStateTestsRepository.aggregatedDeathsUntilDate(startDate) :
+                        covidStateTestsRepository.aggregatedStateDeathsUntilDate(states, startDate);
+                return Transformer.toCumulativeTests(tests, startingAggregate);
 
-        return tests
-                .stream()
-                .map(CovidStateTestsEntity::toDto)
-                .collect(Collectors.toList());
+            case daily:
+                return tests.stream().map(CovidStateTestsEntity::toDto).collect(Collectors.toList());
+
+        }
+
+        return new ArrayList<>();
     }
 }
