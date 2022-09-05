@@ -5,6 +5,9 @@ import com.projectrefocus.service.covid.entity.CovidStateCasesEntity;
 import com.projectrefocus.service.covid.entity.CovidStateDeathsEntity;
 import com.projectrefocus.service.covid.entity.CovidStateTestsEntity;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -29,6 +32,14 @@ public class Transformer {
             }
         });
         return listOfUniqueDates.stream().sorted().collect(Collectors.toList());
+    }
+
+    private static Integer calculateValuePer100K(Integer value, Integer denominator) {
+        BigDecimal decimalValue = new BigDecimal(value);
+        BigDecimal decimalDenominator = new BigDecimal(denominator);
+        BigDecimal result = decimalValue.divide(decimalDenominator, MathContext.DECIMAL32).multiply(new BigDecimal(PER_100K));
+
+        return result.intValue();
     }
 
     public static List<CovidMetricDto> toCumulativeCases(List<CovidStateCasesEntity> casesEntityList, Integer initialAggregate) {
@@ -78,7 +89,7 @@ public class Transformer {
     }
 
     public static List<CovidMetricDto> toDailyCasesPer100K(List<CovidStateCasesEntity> entityList, Integer denominator) {
-        return toDailyCases(entityList).stream().peek(dto -> dto.setValue((dto.getValue() / denominator) * PER_100K)).collect(Collectors.toList());
+        return toDailyCases(entityList).stream().peek(dto -> dto.setValue(calculateValuePer100K(dto.getValue(), denominator))).collect(Collectors.toList());
     }
 
     public static List<CovidMetricDto> toDailyCasesNDayAverage(List<CovidStateCasesEntity> entityList, int nDay) {
@@ -153,7 +164,7 @@ public class Transformer {
     }
 
     public static List<CovidMetricDto> toDailyDeathsPer100K(List<CovidStateDeathsEntity> entityList, Integer denominator) {
-        return toDailyDeaths(entityList).stream().peek(dto -> dto.setValue((dto.getValue() / denominator) * PER_100K)).collect(Collectors.toList());
+        return toDailyDeaths(entityList).stream().peek(dto -> dto.setValue(calculateValuePer100K(dto.getValue(), denominator))).collect(Collectors.toList());
     }
 
     public static List<CovidMetricDto> toDailyDeathsNDayAverage(List<CovidStateDeathsEntity> entityList, int nDay) {
@@ -228,7 +239,7 @@ public class Transformer {
     }
 
     public static List<CovidMetricDto> toDailyTestsPer100K(List<CovidStateTestsEntity> entityList, Integer denominator) {
-        return toDailyTests(entityList).stream().peek(dto -> dto.setValue((dto.getValue() / denominator) * PER_100K)).collect(Collectors.toList());
+        return toDailyTests(entityList).stream().peek(dto -> dto.setValue(calculateValuePer100K(dto.getValue(),  denominator))).collect(Collectors.toList());
     }
 
     public static List<CovidMetricDto> toDailyTestsNDayAverage(List<CovidStateTestsEntity> entityList, int nDay) {
