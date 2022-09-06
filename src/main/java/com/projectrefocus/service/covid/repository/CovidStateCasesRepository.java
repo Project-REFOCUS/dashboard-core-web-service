@@ -28,7 +28,7 @@ public interface CovidStateCasesRepository extends JpaRepository<CovidStateCases
     Integer aggregatedCasesUntilDate(Date targetDate);
 
     @Query(
-            "SELECT CAST(SUM(csce.cases) AS integer) FROM CovidStateCasesEntity csce " +
+            "SELECT CAST(COALESCE(SUM(csce.cases), 0) AS integer) FROM CovidStateCasesEntity csce " +
             "INNER JOIN StateEntity se ON se.id = csce.state.id " +
             "INNER JOIN CalendarDateEntity cdate ON cdate.id = csce.date.id " +
             "WHERE se.shortName IN (:states) AND cdate.date <= :targetDate"
