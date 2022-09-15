@@ -3,6 +3,7 @@ package com.projectrefocus.service.covid;
 import com.projectrefocus.service.covid.dto.CovidMetricDto;
 import com.projectrefocus.service.covid.service.CovidService;
 import com.projectrefocus.service.request.enums.DataOrientation;
+import com.projectrefocus.service.request.enums.SubCategory;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -48,4 +49,14 @@ public class CovidController {
             @RequestParam(name = "startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date startDate) {
         return covidService.getCovidTestsData(states, orientation, startDate);
     }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/vaccinations")
+    public List<CovidMetricDto> getCovidVaccinations(
+            @RequestParam(name = "states") List<String> states,
+            @RequestParam(name = "subCategory") SubCategory subCategory,
+            @RequestParam(name = "orientation") DataOrientation orientation,
+            @RequestParam(name = "startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date startDate) {
+        return covidService.getCovidVaccinationsData(states, subCategory, orientation, startDate);
+    }
+
 }

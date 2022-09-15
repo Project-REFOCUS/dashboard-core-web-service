@@ -2,8 +2,6 @@ package com.projectrefocus.service.covid.entity;
 
 import com.projectrefocus.service.calendar.entity.CalendarDateEntity;
 import com.projectrefocus.service.covid.dto.CovidMetricDto;
-import com.projectrefocus.service.covid.dto.CovidStateCasesDto;
-import com.projectrefocus.service.covid.dto.CovidStateMetricDto;
 import com.projectrefocus.service.geography.entity.StateEntity;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;

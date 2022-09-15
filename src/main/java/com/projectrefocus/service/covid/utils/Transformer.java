@@ -4,6 +4,7 @@ import com.projectrefocus.service.covid.dto.CovidMetricDto;
 import com.projectrefocus.service.covid.entity.CovidStateCasesEntity;
 import com.projectrefocus.service.covid.entity.CovidStateDeathsEntity;
 import com.projectrefocus.service.covid.entity.CovidStateTestsEntity;
+import com.projectrefocus.service.covid.entity.CovidStateVaccinationsEntity;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -266,6 +267,30 @@ public class Transformer {
                 casesValues.remove(0);
             }
         }
+        return results;
+    }
+
+    public static List<CovidMetricDto> toCumulativeDistributedVaccinations(List<CovidStateVaccinationsEntity> entityList, Integer initialAggregate) {
+        List<Date> sortedListOfUniqueDates = sortedListOfUniqueDates(entityList.stream().map(e -> e.getDate().getDate()).collect(Collectors.toList()));
+        Map<Date, Integer> aggregatedByDate = new HashMap<>();
+
+        entityList.forEach(entity -> {
+            Date date = entity.getDate().getDate();
+            Integer aggregatedAmount = aggregatedByDate.getOrDefault(date, 0);
+            aggregatedByDate.put(date, aggregatedAmount + entity.getDistributed());
+        });
+
+        List<CovidMetricDto> results = new ArrayList<>();
+        Integer accumulation = initialAggregate;
+        for (Date uniqueDate : sortedListOfUniqueDates) {
+            CovidMetricDto metricDto = new CovidMetricDto();
+            accumulation += aggregatedByDate.get(uniqueDate);
+            metricDto.setValue(accumulation);
+            metricDto.setDate(uniqueDate);
+
+            results.add(metricDto);
+        }
+
         return results;
     }
 }
