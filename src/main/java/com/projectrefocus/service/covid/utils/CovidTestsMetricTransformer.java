@@ -83,4 +83,9 @@ public class CovidTestsMetricTransformer extends CovidMetricTransformer {
                 .peek(dto -> dto.setValue(calculateValuePer100K(dto.getValue(), denominator)))
                 .collect(Collectors.toList());
     }
+
+    public static List<CovidMetricDto> toDailyTestsPercentChangeInNDayAverage(List<CovidStateTestsEntity> entityList, int nDay) {
+        List<CovidMetricDto> results = toDailyTestsNDayAverage(entityList, nDay);
+        return toPercentChangeInValue(results);
+    }
 }

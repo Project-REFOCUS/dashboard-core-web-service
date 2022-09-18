@@ -317,4 +317,24 @@ public class CovidVaccinationsMetricTransformer extends CovidMetricTransformer {
                 .peek(dto -> dto.setValue(calculateValuePer100K(dto.getValue(), denominator)))
                 .collect(Collectors.toList());
     }
+
+    public static List<CovidMetricDto> toDailyDistributedVaccinationsPercentChangeNDayAverage(List<CovidStateVaccinationsEntity> entityList, int nDay) {
+        List<CovidMetricDto> results = toDailyDistributedVaccinationsNDayAverage(entityList, nDay);
+        return toPercentChangeInValue(results);
+    }
+
+    public static List<CovidMetricDto> toDailyAdministeredVaccinationsPercentChangeNDayAverage(List<CovidStateVaccinationsEntity> entityList, int nDay) {
+        List<CovidMetricDto> results = toDailyAdministeredVaccinationsNDayAverage(entityList, nDay);
+        return toPercentChangeInValue(results);
+    }
+
+    public static List<CovidMetricDto> toDailyAdministeredOneDoseVaccinationsPercentChangeNDayAverage(List<CovidStateVaccinationsEntity> entityList, int nDay) {
+        List<CovidMetricDto> results = toDailyAdministeredOneDoseVaccinationsNDayAverage(entityList, nDay);
+        return toPercentChangeInValue(results);
+    }
+
+    public static List<CovidMetricDto> toDailyAdministeredTwoDoseVaccinationsPercentChangeNDayAverage(List<CovidStateVaccinationsEntity> entityList, int nDay) {
+        List<CovidMetricDto> results = toDailyAdministeredTwoDoseVaccinationsNDayAverage(entityList, nDay);
+        return toPercentChangeInValue(results);
+    }
 }

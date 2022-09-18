@@ -56,6 +56,12 @@ public class CovidCasesService {
             case daily14DayAvgPer100K:
                 denominator = populationService.aggregatedPopulation(states);
                 return CovidCasesMetricTransformer.toDailyCasesNDayAveragePer100K(cases, 14, denominator);
+
+            case percentChangeInDailyOver7:
+                return CovidCasesMetricTransformer.toDailyCasesPercentChangeInNDayAverage(cases, 7);
+
+            case percentChangeInDailyOver14:
+                return CovidCasesMetricTransformer.toDailyCasesPercentChangeInNDayAverage(cases, 14);
         }
 
         return new ArrayList<>();

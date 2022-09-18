@@ -67,9 +67,14 @@ public class CovidCasesMetricTransformer extends CovidMetricTransformer {
     }
 
     public static List<CovidMetricDto> toDailyCasesNDayAveragePer100K(List<CovidStateCasesEntity> entityList, int nDay, Integer denominator) {
-        return CovidCasesMetricTransformer.toDailyCasesNDayAverage(entityList, nDay)
+        return toDailyCasesNDayAverage(entityList, nDay)
                 .stream()
                 .peek(dto -> dto.setValue(calculateValuePer100K(dto.getValue(), denominator)))
                 .collect(Collectors.toList());
+    }
+
+    public static List<CovidMetricDto> toDailyCasesPercentChangeInNDayAverage(List<CovidStateCasesEntity> entityList, int nDay) {
+        List<CovidMetricDto> results = toDailyCasesNDayAverage(entityList, nDay);
+        return toPercentChangeInValue(results);
     }
 }

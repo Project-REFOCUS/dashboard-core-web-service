@@ -45,4 +45,29 @@ public class CovidMetricTransformer {
             return metricDto;
         }).collect(Collectors.toList());
     }
+
+    private static Integer percentChange(int initial, int target) {
+        if (initial == 0) {
+            return initial;
+        }
+        BigDecimal targetMinusInitialDecimal = new BigDecimal(target - initial);
+        BigDecimal initialDecimal = new BigDecimal(initial);
+        BigDecimal result = targetMinusInitialDecimal.divide(initialDecimal, MathContext.DECIMAL32)
+                .multiply(BigDecimal.TEN).multiply(BigDecimal.TEN);
+        return result.intValue();
+    }
+
+    protected static List<CovidMetricDto> toPercentChangeInValue(List<CovidMetricDto> metricDtoList) {
+        List<CovidMetricDto> results = new ArrayList<>();
+        int previousValue = metricDtoList.remove(0).getValue();
+        for (CovidMetricDto dto : metricDtoList) {
+            int currentValue = dto.getValue();
+            dto.setValue(percentChange(previousValue, dto.getValue()));
+            results.add(dto);
+
+            previousValue = currentValue;
+        }
+
+        return results;
+    }
 }

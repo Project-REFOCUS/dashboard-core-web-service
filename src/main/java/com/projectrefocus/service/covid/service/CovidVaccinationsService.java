@@ -132,6 +132,22 @@ public class CovidVaccinationsService {
                     case administeredOneDose -> CovidVaccinationsMetricTransformer.toDailyAdministeredOneDoseNDayAveragePer100K(vaccinations, 14, denominator);
                     case administeredTwoDose -> CovidVaccinationsMetricTransformer.toDailyAdministeredTwoDoseNDayAveragePer100K(vaccinations, 14, denominator);
                 };
+
+            case percentChangeInDailyOver7:
+                return switch (subCategory) {
+                    case distributed -> CovidVaccinationsMetricTransformer.toDailyDistributedVaccinationsPercentChangeNDayAverage(vaccinations, 7);
+                    case administered -> CovidVaccinationsMetricTransformer.toDailyAdministeredVaccinationsPercentChangeNDayAverage(vaccinations, 7);
+                    case administeredOneDose -> CovidVaccinationsMetricTransformer.toDailyAdministeredOneDoseVaccinationsPercentChangeNDayAverage(vaccinations, 7);
+                    case administeredTwoDose -> CovidVaccinationsMetricTransformer.toDailyAdministeredTwoDoseVaccinationsPercentChangeNDayAverage(vaccinations, 7);
+                };
+
+            case percentChangeInDailyOver14:
+                return switch (subCategory) {
+                    case distributed -> CovidVaccinationsMetricTransformer.toDailyDistributedVaccinationsPercentChangeNDayAverage(vaccinations, 14);
+                    case administered -> CovidVaccinationsMetricTransformer.toDailyAdministeredVaccinationsPercentChangeNDayAverage(vaccinations, 14);
+                    case administeredOneDose -> CovidVaccinationsMetricTransformer.toDailyAdministeredOneDoseVaccinationsPercentChangeNDayAverage(vaccinations, 14);
+                    case administeredTwoDose -> CovidVaccinationsMetricTransformer.toDailyAdministeredTwoDoseVaccinationsPercentChangeNDayAverage(vaccinations, 14);
+                };
         }
 
         return new ArrayList<>();
