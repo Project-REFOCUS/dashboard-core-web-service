@@ -3,8 +3,8 @@ package com.projectrefocus.service.covid.service;
 import com.projectrefocus.service.covid.dto.CovidMetricDto;
 import com.projectrefocus.service.covid.entity.CovidStateDeathsEntity;
 import com.projectrefocus.service.covid.repository.CovidStateDeathsRepository;
+import com.projectrefocus.service.covid.utils.CovidDeathsMetricTransformer;
 import com.projectrefocus.service.covid.utils.CovidServiceUtils;
-import com.projectrefocus.service.covid.utils.Transformer;
 import com.projectrefocus.service.population.service.PopulationService;
 import com.projectrefocus.service.request.enums.DataOrientation;
 import org.springframework.stereotype.Component;
@@ -34,20 +34,24 @@ public class CovidDeathsService {
                 Integer startingAggregate = fetchForAllStates ?
                         covidStateDeathsRepository.aggregatedDeathsUntilDate(startDate) :
                         covidStateDeathsRepository.aggregatedStateDeathsUntilDate(states, startDate);
-                return Transformer.toCumulativeDeaths(deaths, startingAggregate);
+                return CovidDeathsMetricTransformer.toCumulativeDeaths(deaths, startingAggregate);
 
             case daily:
-                return Transformer.toDailyDeaths(deaths);
-
-            case dailyPer100K:
-                Integer denominator = populationService.aggregatedPopulation(states);
-                return Transformer.toDailyDeathsPer100K(deaths, denominator);
+                return CovidDeathsMetricTransformer.toDailyDeaths(deaths);
 
             case daily7DayAvg:
-                return Transformer.toDailyDeathsNDayAverage(deaths, 7);
+                return CovidDeathsMetricTransformer.toDailyDeathsNDayAverage(deaths, 7);
 
             case daily14DayAvg:
-                return Transformer.toDailyDeathsNDayAverage(deaths, 14);
+                return CovidDeathsMetricTransformer.toDailyDeathsNDayAverage(deaths, 14);
+
+            case daily7DayAvgPer100K:
+                Integer denominator = populationService.aggregatedPopulation(states);
+                return CovidDeathsMetricTransformer.toDailyDeathsNDayAveragePer100K(deaths, 7, denominator);
+
+            case daily14DayAvgPer100K:
+                denominator = populationService.aggregatedPopulation(states);
+                return CovidDeathsMetricTransformer.toDailyDeathsNDayAveragePer100K(deaths, 14, denominator);
         }
 
         return new ArrayList<>();

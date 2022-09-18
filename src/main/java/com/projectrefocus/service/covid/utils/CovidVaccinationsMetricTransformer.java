@@ -289,4 +289,32 @@ public class CovidVaccinationsMetricTransformer extends CovidMetricTransformer {
         }
         return results;
     }
+
+    public static List<CovidMetricDto> toDailyDistributedNDayAveragePer100K(List<CovidStateVaccinationsEntity> entityList, int nDay, int denominator) {
+        return toDailyDistributedVaccinationsNDayAverage(entityList, nDay)
+                .stream()
+                .peek(dto -> dto.setValue(calculateValuePer100K(dto.getValue(), denominator)))
+                .collect(Collectors.toList());
+    }
+
+    public static List<CovidMetricDto> toDailyAdministeredNDayAveragePer100K(List<CovidStateVaccinationsEntity> entityList, int nDay, int denominator) {
+        return toDailyAdministeredVaccinationsNDayAverage(entityList, nDay)
+                .stream()
+                .peek(dto -> dto.setValue(calculateValuePer100K(dto.getValue(), denominator)))
+                .collect(Collectors.toList());
+    }
+
+    public static List<CovidMetricDto> toDailyAdministeredOneDoseNDayAveragePer100K(List<CovidStateVaccinationsEntity> entityList, int nDay, int denominator) {
+        return toDailyAdministeredOneDoseVaccinationsNDayAverage(entityList, nDay)
+                .stream()
+                .peek(dto -> dto.setValue(calculateValuePer100K(dto.getValue(), denominator)))
+                .collect(Collectors.toList());
+    }
+
+    public static List<CovidMetricDto> toDailyAdministeredTwoDoseNDayAveragePer100K(List<CovidStateVaccinationsEntity> entityList, int nDay, int denominator) {
+        return toDailyAdministeredTwoDoseVaccinationsNDayAverage(entityList, nDay)
+                .stream()
+                .peek(dto -> dto.setValue(calculateValuePer100K(dto.getValue(), denominator)))
+                .collect(Collectors.toList());
+    }
 }

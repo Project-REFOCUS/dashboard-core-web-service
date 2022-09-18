@@ -4,7 +4,7 @@ import com.projectrefocus.service.covid.dto.CovidMetricDto;
 import com.projectrefocus.service.covid.entity.CovidStateTestsEntity;
 import com.projectrefocus.service.covid.repository.CovidStateTestsRepository;
 import com.projectrefocus.service.covid.utils.CovidServiceUtils;
-import com.projectrefocus.service.covid.utils.Transformer;
+import com.projectrefocus.service.covid.utils.CovidTestsMetricTransformer;
 import com.projectrefocus.service.population.service.PopulationService;
 import com.projectrefocus.service.request.enums.DataOrientation;
 import org.springframework.stereotype.Component;
@@ -34,21 +34,28 @@ public class CovidTestsService {
                 Integer startingAggregate = fetchForAllStates ?
                         covidStateTestsRepository.aggregatedTestsUntilDate(startDate) :
                         covidStateTestsRepository.aggregatedStateTestsUntilDate(states, startDate);
-                return Transformer.toCumulativeTests(tests, startingAggregate);
+                return CovidTestsMetricTransformer.toCumulativeTests(tests, startingAggregate);
 
             case daily:
-                return Transformer.toDailyTests(tests);
+                return CovidTestsMetricTransformer.toDailyTests(tests);
 
             case dailyPer100K:
                 Integer denominator = populationService.aggregatedPopulation(states);
-                return Transformer.toDailyTestsPer100K(tests, denominator);
+                return CovidTestsMetricTransformer.toDailyTestsPer100K(tests, denominator);
 
             case daily7DayAvg:
-                return Transformer.toDailyTestsNDayAverage(tests, 7);
+                return CovidTestsMetricTransformer.toDailyTestsNDayAverage(tests, 7);
 
             case daily14DayAvg:
-                return Transformer.toDailyTestsNDayAverage(tests, 14);
+                return CovidTestsMetricTransformer.toDailyTestsNDayAverage(tests, 14);
 
+            case daily7DayAvgPer100K:
+                denominator = populationService.aggregatedPopulation(states);
+                return CovidTestsMetricTransformer.toDailyTestsNDayAveragePer100K(tests, 7, denominator);
+
+            case daily14DayAvgPer100K:
+                denominator = populationService.aggregatedPopulation(states);
+                return CovidTestsMetricTransformer.toDailyTestsNDayAveragePer100K(tests, 14, denominator);
         }
 
         return new ArrayList<>();

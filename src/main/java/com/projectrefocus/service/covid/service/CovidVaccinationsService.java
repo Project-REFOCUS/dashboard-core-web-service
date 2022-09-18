@@ -34,46 +34,42 @@ public class CovidVaccinationsService {
             case cumulative:
 
                 switch (subCategory) {
-                    case distributed:
+                    case distributed -> {
                         Integer distributedStartingAggregate = fetchForAllStates ?
                                 covidStateVaccinationsRepository.aggregatedDistributedVaccinationsUntilDate(startDate) :
                                 covidStateVaccinationsRepository.aggregatedStateDistributedVaccinationsUntilDate(states, startDate);
                         return CovidVaccinationsMetricTransformer.toCumulativeDistributedVaccinations(vaccinations, distributedStartingAggregate);
-
-                    case administered:
+                    }
+                    case administered -> {
                         Integer administeredStartingAggregate = fetchForAllStates ?
                                 covidStateVaccinationsRepository.aggregatedAdministeredVaccinationsUntilDate(startDate) :
                                 covidStateVaccinationsRepository.aggregatedStateAdministeredVaccinationsUntilDate(states, startDate);
                         return CovidVaccinationsMetricTransformer.toCumulativeAdministeredVaccinations(vaccinations, administeredStartingAggregate);
-
-                    case administeredOneDose:
+                    }
+                    case administeredOneDose -> {
                         Integer administeredOneDoseStartingAggregate = fetchForAllStates ?
                                 covidStateVaccinationsRepository.aggregatedAdministeredOneDoseVaccinationsUntilDate(startDate) :
                                 covidStateVaccinationsRepository.aggregatedStateAdministeredOneDoseVaccinationsUntilDate(states, startDate);
                         return CovidVaccinationsMetricTransformer.toCumulativeAdministeredOneDoseVaccinations(vaccinations, administeredOneDoseStartingAggregate);
-
-                    case administeredTwoDose:
+                    }
+                    case administeredTwoDose -> {
                         Integer administeredTwoDoseStartingAggregate = fetchForAllStates ?
                                 covidStateVaccinationsRepository.aggregateAdministeredTwoDoseVaccinationsUntilDate(startDate) :
                                 covidStateVaccinationsRepository.aggregatedStateAdministeredTwoDoseVaccinationsUntilDate(states, startDate);
                         return CovidVaccinationsMetricTransformer.toCumulativeAdministeredTwoDoseVaccinations(vaccinations, administeredTwoDoseStartingAggregate);
+                    }
                 }
 
             case daily:
-
-                switch (subCategory) {
-                    case distributed:
-                        return CovidVaccinationsMetricTransformer.toDailyDistributedVaccinations(vaccinations);
-
-                    case administered:
-                        return CovidVaccinationsMetricTransformer.toDailyAdministeredVaccinations(vaccinations);
-
-                    case administeredOneDose:
-                        return CovidVaccinationsMetricTransformer.toDailyAdministeredOneDoseVaccinations(vaccinations);
-
-                    case administeredTwoDose:
-                        return CovidVaccinationsMetricTransformer.toDailyAdministeredTwoDoseVaccinations(vaccinations);
-                }
+                return switch (subCategory) {
+                    case distributed -> CovidVaccinationsMetricTransformer.toDailyDistributedVaccinations(vaccinations);
+                    case administered ->
+                            CovidVaccinationsMetricTransformer.toDailyAdministeredVaccinations(vaccinations);
+                    case administeredOneDose ->
+                            CovidVaccinationsMetricTransformer.toDailyAdministeredOneDoseVaccinations(vaccinations);
+                    case administeredTwoDose ->
+                            CovidVaccinationsMetricTransformer.toDailyAdministeredTwoDoseVaccinations(vaccinations);
+                };
 
             case dailyPer100K:
 
@@ -96,36 +92,46 @@ public class CovidVaccinationsService {
                 }
 
             case daily7DayAvg:
-
-                switch (subCategory) {
-                    case distributed:
-                        return CovidVaccinationsMetricTransformer.toDailyDistributedVaccinationsNDayAverage(vaccinations, 7);
-
-                    case administered:
-                        return CovidVaccinationsMetricTransformer.toDailyAdministeredVaccinationsNDayAverage(vaccinations, 7);
-
-                    case administeredOneDose:
-                        return CovidVaccinationsMetricTransformer.toDailyAdministeredOneDoseVaccinationsNDayAverage(vaccinations, 7);
-
-                    case administeredTwoDose:
-                        return CovidVaccinationsMetricTransformer.toDailyAdministeredTwoDoseVaccinationsNDayAverage(vaccinations, 7);
-                }
+                return switch (subCategory) {
+                    case distributed ->
+                            CovidVaccinationsMetricTransformer.toDailyDistributedVaccinationsNDayAverage(vaccinations, 7);
+                    case administered ->
+                            CovidVaccinationsMetricTransformer.toDailyAdministeredVaccinationsNDayAverage(vaccinations, 7);
+                    case administeredOneDose ->
+                            CovidVaccinationsMetricTransformer.toDailyAdministeredOneDoseVaccinationsNDayAverage(vaccinations, 7);
+                    case administeredTwoDose ->
+                            CovidVaccinationsMetricTransformer.toDailyAdministeredTwoDoseVaccinationsNDayAverage(vaccinations, 7);
+                };
 
             case daily14DayAvg:
+                return switch (subCategory) {
+                    case distributed ->
+                            CovidVaccinationsMetricTransformer.toDailyDistributedVaccinationsNDayAverage(vaccinations, 14);
+                    case administered ->
+                            CovidVaccinationsMetricTransformer.toDailyAdministeredVaccinationsNDayAverage(vaccinations, 14);
+                    case administeredOneDose ->
+                            CovidVaccinationsMetricTransformer.toDailyAdministeredOneDoseVaccinationsNDayAverage(vaccinations, 14);
+                    case administeredTwoDose ->
+                            CovidVaccinationsMetricTransformer.toDailyAdministeredTwoDoseVaccinationsNDayAverage(vaccinations, 14);
+                };
 
-                switch (subCategory) {
-                    case distributed:
-                        return CovidVaccinationsMetricTransformer.toDailyDistributedVaccinationsNDayAverage(vaccinations, 14);
+            case daily7DayAvgPer100K:
+                Integer denominator = populationService.aggregatedPopulation(states);
+                return switch (subCategory) {
+                    case distributed -> CovidVaccinationsMetricTransformer.toDailyDistributedNDayAveragePer100K(vaccinations, 7, denominator);
+                    case administered -> CovidVaccinationsMetricTransformer.toDailyAdministeredNDayAveragePer100K(vaccinations, 7, denominator);
+                    case administeredOneDose -> CovidVaccinationsMetricTransformer.toDailyAdministeredOneDoseNDayAveragePer100K(vaccinations, 7, denominator);
+                    case administeredTwoDose -> CovidVaccinationsMetricTransformer.toDailyAdministeredTwoDoseNDayAveragePer100K(vaccinations, 7, denominator);
+                };
 
-                    case administered:
-                        return CovidVaccinationsMetricTransformer.toDailyAdministeredVaccinationsNDayAverage(vaccinations, 14);
-
-                    case administeredOneDose:
-                        return CovidVaccinationsMetricTransformer.toDailyAdministeredOneDoseVaccinationsNDayAverage(vaccinations, 14);
-
-                    case administeredTwoDose:
-                        return CovidVaccinationsMetricTransformer.toDailyAdministeredTwoDoseVaccinationsNDayAverage(vaccinations, 14);
-                }
+            case daily14DayAvgPer100K:
+                denominator = populationService.aggregatedPopulation(states);
+                return switch (subCategory) {
+                    case distributed -> CovidVaccinationsMetricTransformer.toDailyDistributedNDayAveragePer100K(vaccinations, 14, denominator);
+                    case administered -> CovidVaccinationsMetricTransformer.toDailyAdministeredNDayAveragePer100K(vaccinations, 14, denominator);
+                    case administeredOneDose -> CovidVaccinationsMetricTransformer.toDailyAdministeredOneDoseNDayAveragePer100K(vaccinations, 14, denominator);
+                    case administeredTwoDose -> CovidVaccinationsMetricTransformer.toDailyAdministeredTwoDoseNDayAveragePer100K(vaccinations, 14, denominator);
+                };
         }
 
         return new ArrayList<>();
