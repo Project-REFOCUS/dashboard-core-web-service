@@ -18,7 +18,29 @@ public class CovidDeathsMetricTransformer extends CovidMetricTransformer {
             aggregatedByDate.put(date, aggregatedAmount + entity.getDeaths());
         });
 
-        return toCovidMetricDtoList(sortedListOfUniqueDates, aggregatedByDate);
+        return toAccumulatedCovidMetricDtoList(sortedListOfUniqueDates, aggregatedByDate, initialAggregate);
+    }
+
+    public static List<CovidMetricDto> toMortalityRate(List<CovidStateDeathsEntity> entityList, Integer initialAggregate, Integer denominator) {
+        return toCumulativeDeaths(entityList, initialAggregate)
+                .stream()
+                .peek(dto -> dto.setValue(calculateValuePer100K(dto.getValue(), denominator)))
+                .collect(Collectors.toList());
+    }
+
+    public static List<CovidMetricDto> toMortalityRateOverNDays(List<CovidStateDeathsEntity> entityList, Integer initialAggregate, Integer denominator, Integer nDays) {
+        List<CovidMetricDto> deaths = toMortalityRate(entityList, initialAggregate, denominator);
+        return toNDayAverageCovidMetricDtoList(deaths, nDays);
+    }
+
+    public static List<CovidMetricDto> toMortalityRatePercentChange(List<CovidStateDeathsEntity> entityList, Integer initialAggregate, Integer denominator) {
+        List<CovidMetricDto> deaths = toMortalityRate(entityList, initialAggregate, denominator);
+        return toPercentChangeInValue(deaths);
+    }
+
+    public static List<CovidMetricDto> toMortalityRatePercentChangeOverNDays(List<CovidStateDeathsEntity> entityList, Integer initialAggregate, Integer denominator, Integer nDays) {
+        List<CovidMetricDto> deaths = toMortalityRateOverNDays(entityList, initialAggregate, denominator, nDays);
+        return toPercentChangeInValue(deaths);
     }
 
     public static List<CovidMetricDto> toDailyDeaths(List<CovidStateDeathsEntity> entityList) {

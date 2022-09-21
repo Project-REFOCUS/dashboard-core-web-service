@@ -24,6 +24,12 @@ public class CovidDeathsService {
         this.populationService = populationService;
     }
 
+    private Integer getAccumulatedStartingAggregate(Date startDate, List<String> states) {
+        return states.isEmpty() ?
+                covidStateDeathsRepository.aggregatedDeathsUntilDate(startDate) :
+                covidStateDeathsRepository.aggregatedStateDeathsUntilDate(states, startDate);
+    }
+
     public List<CovidMetricDto> getData(List<String> states, DataOrientation orientation, Date startDate) {
         boolean fetchForAllStates = states.isEmpty();
         List<CovidStateDeathsEntity> deaths = fetchForAllStates ?
@@ -36,6 +42,36 @@ public class CovidDeathsService {
                         covidStateDeathsRepository.aggregatedStateDeathsUntilDate(states, startDate);
                 return CovidDeathsMetricTransformer.toCumulativeDeaths(deaths, startingAggregate);
 
+            case mortalityRate:
+                Integer denominator = populationService.aggregatedPopulation(states);
+                startingAggregate = getAccumulatedStartingAggregate(startDate, states);
+                return CovidDeathsMetricTransformer.toMortalityRate(deaths, startingAggregate, denominator);
+
+            case mortalityRateOver7Days:
+                denominator = populationService.aggregatedPopulation(states);
+                startingAggregate = getAccumulatedStartingAggregate(startDate, states);
+                return CovidDeathsMetricTransformer.toMortalityRateOverNDays(deaths, startingAggregate, denominator, 7);
+
+            case mortalityRateOver14Days:
+                denominator = populationService.aggregatedPopulation(states);
+                startingAggregate = getAccumulatedStartingAggregate(startDate, states);
+                return CovidDeathsMetricTransformer.toMortalityRateOverNDays(deaths, startingAggregate, denominator, 14);
+
+            case percentChangeInMortalityRate:
+                denominator = populationService.aggregatedPopulation(states);
+                startingAggregate = getAccumulatedStartingAggregate(startDate, states);
+                return CovidDeathsMetricTransformer.toMortalityRatePercentChange(deaths, startingAggregate, denominator);
+
+            case percentChangeInMortalityRateOver7:
+                denominator = populationService.aggregatedPopulation(states);
+                startingAggregate = getAccumulatedStartingAggregate(startDate, states);
+                return CovidDeathsMetricTransformer.toMortalityRatePercentChangeOverNDays(deaths, startingAggregate, denominator, 7);
+
+            case percentChangeInMortalityRateOver14:
+                denominator = populationService.aggregatedPopulation(states);
+                startingAggregate = getAccumulatedStartingAggregate(startDate, states);
+                return CovidDeathsMetricTransformer.toMortalityRatePercentChangeOverNDays(deaths, startingAggregate, denominator, 14);
+
             case daily:
                 return CovidDeathsMetricTransformer.toDailyDeaths(deaths);
 
@@ -46,7 +82,7 @@ public class CovidDeathsService {
                 return CovidDeathsMetricTransformer.toDailyDeathsNDayAverage(deaths, 14);
 
             case daily7DayAvgPer100K:
-                Integer denominator = populationService.aggregatedPopulation(states);
+                denominator = populationService.aggregatedPopulation(states);
                 return CovidDeathsMetricTransformer.toDailyDeathsNDayAveragePer100K(deaths, 7, denominator);
 
             case daily14DayAvgPer100K:

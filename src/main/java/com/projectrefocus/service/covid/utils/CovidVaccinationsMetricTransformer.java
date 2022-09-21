@@ -23,18 +23,7 @@ public class CovidVaccinationsMetricTransformer extends CovidMetricTransformer {
             aggregatedByDate.put(date, aggregatedAmount + entity.getDistributed());
         });
 
-        List<CovidMetricDto> results = new ArrayList<>();
-        Integer accumulation = initialAggregate;
-        for (Date uniqueDate : sortedListOfUniqueDates) {
-            CovidMetricDto metricDto = new CovidMetricDto();
-            accumulation += aggregatedByDate.get(uniqueDate);
-            metricDto.setValue(accumulation);
-            metricDto.setDate(uniqueDate);
-
-            results.add(metricDto);
-        }
-
-        return results;
+        return toAccumulatedCovidMetricDtoList(sortedListOfUniqueDates, aggregatedByDate, initialAggregate);
     }
 
     public static List<CovidMetricDto> toCumulativeAdministeredVaccinations(List<CovidStateVaccinationsEntity> entityList, Integer initialAggregate) {
@@ -47,18 +36,7 @@ public class CovidVaccinationsMetricTransformer extends CovidMetricTransformer {
             aggregatedByDate.put(date, aggregatedAmount + entity.getAdministered());
         });
 
-        List<CovidMetricDto> results = new ArrayList<>();
-        Integer accumulation = initialAggregate;
-        for (Date uniqueDate : sortedListOfUniqueDates) {
-            CovidMetricDto metricDto = new CovidMetricDto();
-            accumulation += aggregatedByDate.get(uniqueDate);
-            metricDto.setValue(accumulation);
-            metricDto.setDate(uniqueDate);
-
-            results.add(metricDto);
-        }
-
-        return results;
+        return toAccumulatedCovidMetricDtoList(sortedListOfUniqueDates, aggregatedByDate, initialAggregate);
     }
 
     public static List<CovidMetricDto> toCumulativeAdministeredOneDoseVaccinations(List<CovidStateVaccinationsEntity> entityList, Integer initialAggregate) {
@@ -71,18 +49,7 @@ public class CovidVaccinationsMetricTransformer extends CovidMetricTransformer {
             aggregatedByDate.put(date, aggregatedAmount + entity.getAdministeredOneDose());
         });
 
-        List<CovidMetricDto> results = new ArrayList<>();
-        Integer accumulation = initialAggregate;
-        for (Date uniqueDate : sortedListOfUniqueDates) {
-            CovidMetricDto metricDto = new CovidMetricDto();
-            accumulation += aggregatedByDate.get(uniqueDate);
-            metricDto.setValue(accumulation);
-            metricDto.setDate(uniqueDate);
-
-            results.add(metricDto);
-        }
-
-        return results;
+        return toAccumulatedCovidMetricDtoList(sortedListOfUniqueDates, aggregatedByDate, initialAggregate);
     }
 
     public static List<CovidMetricDto> toCumulativeAdministeredTwoDoseVaccinations(List<CovidStateVaccinationsEntity> entityList, Integer initialAggregate) {
@@ -95,18 +62,7 @@ public class CovidVaccinationsMetricTransformer extends CovidMetricTransformer {
             aggregatedByDate.put(date, aggregatedAmount + entity.getAdministeredTwoDose());
         });
 
-        List<CovidMetricDto> results = new ArrayList<>();
-        Integer accumulation = initialAggregate;
-        for (Date uniqueDate : sortedListOfUniqueDates) {
-            CovidMetricDto metricDto = new CovidMetricDto();
-            accumulation += aggregatedByDate.get(uniqueDate);
-            metricDto.setValue(accumulation);
-            metricDto.setDate(uniqueDate);
-
-            results.add(metricDto);
-        }
-
-        return results;
+        return toAccumulatedCovidMetricDtoList(sortedListOfUniqueDates, aggregatedByDate, initialAggregate);
     }
 
     public static List<CovidMetricDto> toDailyDistributedVaccinations(List<CovidStateVaccinationsEntity> entityList) {

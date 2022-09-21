@@ -10,5 +10,12 @@ public enum DataOrientation {
     daily14DayAvgPer100K,
     percentageChangeInDaily,
     percentChangeInDailyOver7,
-    percentChangeInDailyOver14
+    percentChangeInDailyOver14,
+
+    mortalityRate,
+    mortalityRateOver7Days,
+    mortalityRateOver14Days,
+    percentChangeInMortalityRate,
+    percentChangeInMortalityRateOver7,
+    percentChangeInMortalityRateOver14
 }
