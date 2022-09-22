@@ -18,7 +18,7 @@ public class CovidCasesMetricTransformer extends CovidMetricTransformer {
             aggregatedByDate.put(date, aggregatedAmount + entity.getCases());
         });
 
-        return toCovidMetricDtoList(sortedListOfUniqueDates, aggregatedByDate);
+        return toAccumulatedCovidMetricDtoList(sortedListOfUniqueDates, aggregatedByDate, initialAggregate);
     }
 
     public static List<CovidMetricDto> toDailyCases(List<CovidStateCasesEntity> entityList) {
