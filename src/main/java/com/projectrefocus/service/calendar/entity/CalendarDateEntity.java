@@ -1,5 +1,6 @@
 package com.projectrefocus.service.calendar.entity;
 
+import com.projectrefocus.service.police.entity.FatalPoliceShootingsEntity;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -10,8 +11,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.sql.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "calendar_date")
@@ -28,14 +31,19 @@ public class CalendarDateEntity {
     private Byte weekNumber;
 
     @Fetch(FetchMode.JOIN)
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "calendar_month_id")
     private CalendarMonthEntity month;
 
     @Fetch(FetchMode.JOIN)
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "calendar_day_id")
     private CalendarDayEntity day;
+
+    @Fetch(FetchMode.SUBSELECT)
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "calendar_date_id", referencedColumnName = "id")
+    private List<FatalPoliceShootingsEntity> shootings;
 
     public void setId(Short id) {
         this.id = id;
@@ -75,5 +83,13 @@ public class CalendarDateEntity {
 
     public CalendarMonthEntity getMonth() {
         return month;
+    }
+
+    public void setShootings(List<FatalPoliceShootingsEntity> shootings) {
+        this.shootings = shootings;
+    }
+
+    public List<FatalPoliceShootingsEntity> getShootings() {
+        return this.shootings;
     }
 }

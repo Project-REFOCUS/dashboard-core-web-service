@@ -1,14 +1,10 @@
 package com.projectrefocus.service.geography.entity;
 
 import com.projectrefocus.service.geography.dto.CountyDto;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "county")
@@ -24,6 +20,11 @@ public class CountyEntity {
 
     @Column(name = "fips")
     private String fips;
+
+    @Fetch(FetchMode.JOIN)
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "state_id")
+    private StateEntity state;
 
     public void setId(Short id) {
         this.id = id;
@@ -47,6 +48,14 @@ public class CountyEntity {
 
     public String getFips() {
         return fips;
+    }
+
+    public void setState(StateEntity state) {
+        this.state = state;
+    }
+
+    public StateEntity getState() {
+        return state;
     }
 
     public CountyDto toDto() {
