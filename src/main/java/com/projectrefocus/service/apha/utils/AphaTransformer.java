@@ -1,4 +1,4 @@
-package com.projectrefocus.service.police.utils;
+package com.projectrefocus.service.apha.utils;
 
 import com.projectrefocus.service.calendar.entity.CalendarDateEntity;
 import com.projectrefocus.service.common.dto.MetricDto;
@@ -10,16 +10,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class PoliceTransformer extends MetricTransformer {
+public class AphaTransformer extends MetricTransformer {
 
-    public static List<MetricDto> toCumulativeShootings(List<CalendarDateEntity> entityList, Integer initialAggregate) {
+    public static List<MetricDto> toCumulativeDeclarations(List<CalendarDateEntity> entityList, Integer initialAggregate) {
         List<Date> sortedListOfUniqueDates = sortedListOfUniqueDates(entityList.stream().map(CalendarDateEntity::getDate).collect(Collectors.toList()));
         Map<Date, Integer> aggregatedByDate = new HashMap<>();
 
         entityList.forEach(entity -> {
             Date date = entity.getDate();
             Integer aggregatedAmount = aggregatedByDate.getOrDefault(date, 0);
-            aggregatedByDate.put(date, aggregatedAmount + (entity.getShootings().isEmpty() ? 0 : 1));
+            aggregatedByDate.put(date, aggregatedAmount + (entity.getDeclarations().isEmpty() ? 0 : 1));
         });
 
         return toAccumulatedMetricDtoList(sortedListOfUniqueDates, aggregatedByDate, initialAggregate);

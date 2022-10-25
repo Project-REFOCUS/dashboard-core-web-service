@@ -1,5 +1,6 @@
 package com.projectrefocus.service.calendar.entity;
 
+import com.projectrefocus.service.apha.entity.RacismDeclarationEntity;
 import com.projectrefocus.service.police.entity.FatalPoliceShootingsEntity;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -44,6 +45,11 @@ public class CalendarDateEntity {
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "calendar_date_id", referencedColumnName = "id")
     private List<FatalPoliceShootingsEntity> shootings;
+
+    @Fetch(FetchMode.SUBSELECT)
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "calendar_date_id", referencedColumnName = "id")
+    private List<RacismDeclarationEntity> declarations;
 
     public void setId(Short id) {
         this.id = id;
@@ -91,5 +97,13 @@ public class CalendarDateEntity {
 
     public List<FatalPoliceShootingsEntity> getShootings() {
         return this.shootings;
+    }
+
+    public void setDeclarations(List<RacismDeclarationEntity> declarations) {
+        this.declarations = declarations;
+    }
+
+    public List<RacismDeclarationEntity> getDeclarations() {
+        return declarations;
     }
 }
