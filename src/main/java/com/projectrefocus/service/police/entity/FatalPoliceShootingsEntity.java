@@ -3,8 +3,6 @@ package com.projectrefocus.service.police.entity;
 import com.projectrefocus.service.calendar.entity.CalendarDateEntity;
 import com.projectrefocus.service.ethnicity.entity.RaceEthnicityEntity;
 import com.projectrefocus.service.geography.entity.CityEntity;
-import com.projectrefocus.service.geography.entity.CountyEntity;
-import com.projectrefocus.service.geography.entity.StateEntity;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 

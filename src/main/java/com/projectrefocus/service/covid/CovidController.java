@@ -1,6 +1,9 @@
 package com.projectrefocus.service.covid;
 
+import com.projectrefocus.service.common.dto.MetricDto;
 import com.projectrefocus.service.covid.dto.CovidMetricDto;
+import com.projectrefocus.service.covid.enums.PrimaryCategory;
+import com.projectrefocus.service.covid.enums.SecondaryCategory;
 import com.projectrefocus.service.covid.service.CovidService;
 import com.projectrefocus.service.request.enums.DataOrientation;
 import com.projectrefocus.service.request.enums.SubCategory;
@@ -59,4 +62,13 @@ public class CovidController {
         return covidService.getCovidVaccinationsData(states, subCategory, orientation, startDate);
     }
 
+    @RequestMapping(method = RequestMethod.GET, value = "/behindbars")
+    public List<MetricDto> getCovidBehindBars(
+            @RequestParam(name = "states") List<String> states,
+            @RequestParam(name = "primaryCategory") PrimaryCategory primaryCategory,
+            @RequestParam(name = "secondaryCategory") SecondaryCategory secondaryCategory,
+            @RequestParam(name = "orientation") DataOrientation orientation,
+            @RequestParam(name = "startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date startDate) {
+        return covidService.getCovidBehindBarsData(states, primaryCategory, secondaryCategory, orientation, startDate);
+    }
 }

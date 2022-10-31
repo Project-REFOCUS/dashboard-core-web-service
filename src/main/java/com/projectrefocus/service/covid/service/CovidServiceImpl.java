@@ -1,6 +1,9 @@
 package com.projectrefocus.service.covid.service;
 
+import com.projectrefocus.service.common.dto.MetricDto;
 import com.projectrefocus.service.covid.dto.CovidMetricDto;
+import com.projectrefocus.service.covid.enums.PrimaryCategory;
+import com.projectrefocus.service.covid.enums.SecondaryCategory;
 import com.projectrefocus.service.request.enums.DataOrientation;
 import com.projectrefocus.service.request.enums.SubCategory;
 import org.springframework.stereotype.Service;
@@ -16,13 +19,17 @@ public class CovidServiceImpl implements CovidService {
     private final CovidTestsService covidTestsService;
     private final CovidVaccinationsService covidVaccinationsService;
 
+    private final CovidBehindBarsService covidBehindBarsService;
+
     public CovidServiceImpl(
             CovidCasesService covidCasesService, CovidDeathsService covidDeathsService,
-            CovidTestsService covidTestsService, CovidVaccinationsService covidVaccinationsService) {
+            CovidTestsService covidTestsService, CovidVaccinationsService covidVaccinationsService,
+            CovidBehindBarsService covidBehindBarsService) {
         this.covidCasesService = covidCasesService;
         this.covidDeathsService = covidDeathsService;
         this.covidTestsService = covidTestsService;
         this.covidVaccinationsService = covidVaccinationsService;
+        this.covidBehindBarsService = covidBehindBarsService;
     }
 
     public List<CovidMetricDto> getCovidCasesData(List<String> states, DataOrientation orientation, Date startDate) {
@@ -39,5 +46,9 @@ public class CovidServiceImpl implements CovidService {
 
     public List<CovidMetricDto> getCovidVaccinationsData(List<String> states, SubCategory subCategory, DataOrientation orientation, Date startDate) {
         return covidVaccinationsService.getData(states, subCategory, orientation, startDate);
+    }
+
+    public List<MetricDto> getCovidBehindBarsData(List<String> states, PrimaryCategory primaryCategory, SecondaryCategory secondaryCategory, DataOrientation orientation, Date startDate) {
+        return covidBehindBarsService.getData(states, primaryCategory, secondaryCategory, orientation, startDate);
     }
 }
