@@ -33,4 +33,14 @@ public class MetricTransformer {
 
         return results;
     }
+
+    public static List<MetricDto> toMetricDtoList(List<Date> dates, Map<Date, Integer> aggregationByDate) {
+        return dates.stream().map(date -> {
+            MetricDto metricDto = new MetricDto();
+            metricDto.setValue(aggregationByDate.get(date));
+            metricDto.setDate(date);
+
+            return metricDto;
+        }).collect(Collectors.toList());
+    }
 }

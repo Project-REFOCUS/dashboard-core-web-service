@@ -94,6 +94,67 @@ public class CovidBehindBarsService {
                             }
                         }
                 }
+
+            case daily:
+
+                return switch (primaryCategory) {
+                    case residents -> switch (secondaryCategory) {
+                        case cases -> CovidBehindBarsMetricTransformer.toDailyResidentCases(metrics);
+                        case deaths -> CovidBehindBarsMetricTransformer.toDailyResidentDeaths(metrics);
+                        case tests -> CovidBehindBarsMetricTransformer.toDailyResidentTests(metrics);
+                        case administeredOneDose ->
+                                CovidBehindBarsMetricTransformer.toDailyResidentAdministeredOneDose(metrics);
+                        case administeredTwoDose ->
+                                CovidBehindBarsMetricTransformer.toDailyResidentAdministeredTwoDose(metrics);
+                    };
+                    case staff -> switch (secondaryCategory) {
+                        case cases -> CovidBehindBarsMetricTransformer.toDailyStaffCases(metrics);
+                        case deaths -> CovidBehindBarsMetricTransformer.toDailyStaffDeaths(metrics);
+                        case tests -> new ArrayList<>();
+                        case administeredOneDose ->
+                                CovidBehindBarsMetricTransformer.toDailyStaffAdministeredOneDose(metrics);
+                        case administeredTwoDose ->
+                                CovidBehindBarsMetricTransformer.toDailyStaffAdministeredTwoDose(metrics);
+                    };
+                };
+
+            case daily7DayAvg:
+
+                return switch (primaryCategory) {
+                    case residents -> switch (secondaryCategory) {
+                        case cases -> CovidBehindBarsMetricTransformer.toDailyResidentCasesNDayAverage(metrics, 7);
+                        case deaths -> CovidBehindBarsMetricTransformer.toDailyResidentDeathsNDayAverage(metrics, 7);
+                        case tests -> CovidBehindBarsMetricTransformer.toDailyResidentTestsNDayAverage(metrics, 7);
+                        case administeredOneDose -> CovidBehindBarsMetricTransformer.toDailyResidentAdministeredOneDoseNDayAverage(metrics, 7);
+                        case administeredTwoDose -> CovidBehindBarsMetricTransformer.toDailyResidentAdministeredTwoDoseNDayAverage(metrics, 7);
+                    };
+                    case staff -> switch (secondaryCategory) {
+                        case cases -> CovidBehindBarsMetricTransformer.toDailyStaffCasesNDayAverage(metrics, 7);
+                        case deaths -> CovidBehindBarsMetricTransformer.toDailyStaffDeathsNDayAverage(metrics, 7);
+                        case tests -> new ArrayList<>();
+                        case administeredOneDose -> CovidBehindBarsMetricTransformer.toDailyStaffAdministeredOneDoseNDayAverage(metrics, 7);
+                        case administeredTwoDose -> CovidBehindBarsMetricTransformer.toDailyStaffAdministeredTwoDoseNDayAverage(metrics, 7);
+                    };
+                };
+
+            case daily14DayAvg:
+
+                return switch (primaryCategory) {
+                    case residents -> switch (secondaryCategory) {
+                        case cases -> CovidBehindBarsMetricTransformer.toDailyResidentCasesNDayAverage(metrics, 14);
+                        case deaths -> CovidBehindBarsMetricTransformer.toDailyResidentDeathsNDayAverage(metrics, 14);
+                        case tests -> CovidBehindBarsMetricTransformer.toDailyResidentTestsNDayAverage(metrics, 14);
+                        case administeredOneDose -> CovidBehindBarsMetricTransformer.toDailyResidentAdministeredOneDoseNDayAverage(metrics, 14);
+                        case administeredTwoDose -> CovidBehindBarsMetricTransformer.toDailyResidentAdministeredTwoDoseNDayAverage(metrics, 14);
+                    };
+                    case staff -> switch (secondaryCategory) {
+                        case cases -> CovidBehindBarsMetricTransformer.toDailyStaffCasesNDayAverage(metrics, 14);
+                        case deaths -> CovidBehindBarsMetricTransformer.toDailyStaffDeathsNDayAverage(metrics, 14);
+                        case tests -> new ArrayList<>();
+                        case administeredOneDose -> CovidBehindBarsMetricTransformer.toDailyStaffAdministeredOneDoseNDayAverage(metrics, 14);
+                        case administeredTwoDose -> CovidBehindBarsMetricTransformer.toDailyStaffAdministeredTwoDoseNDayAverage(metrics, 14);
+                    };
+                };
         }
 
         return new ArrayList<>();
