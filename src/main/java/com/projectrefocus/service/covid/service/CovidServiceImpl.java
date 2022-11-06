@@ -32,15 +32,15 @@ public class CovidServiceImpl implements CovidService {
         this.covidBehindBarsService = covidBehindBarsService;
     }
 
-    public List<CovidMetricDto> getCovidCasesData(List<String> states, DataOrientation orientation, Date startDate) {
+    public List<MetricDto> getCovidCasesData(List<String> states, DataOrientation orientation, Date startDate) {
         return covidCasesService.getData(states, orientation, startDate);
     }
 
-    public List<CovidMetricDto> getCovidDeathsData(List<String> states, DataOrientation orientation, Date startDate) {
+    public List<MetricDto> getCovidDeathsData(List<String> states, DataOrientation orientation, Date startDate) {
         return covidDeathsService.getData(states, orientation, startDate);
     }
 
-    public List<CovidMetricDto> getCovidTestsData(List<String> states, DataOrientation orientation, Date startDate) {
+    public List<MetricDto> getCovidTestsData(List<String> states, DataOrientation orientation, Date startDate) {
         return covidTestsService.getData(states, orientation, startDate);
     }
 

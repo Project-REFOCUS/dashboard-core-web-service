@@ -22,7 +22,7 @@ public class StatePopulationEntity {
     @Column(name = "population")
     private Integer population;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "state_id")
     private StateEntity state;
 

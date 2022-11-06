@@ -9,7 +9,7 @@ import java.util.List;
 public interface StatePopulationRepository extends JpaRepository<StatePopulationEntity, Byte> {
 
     @Query(
-            "SELECT spe, se FROM StatePopulationEntity spe " +
+            "SELECT spe FROM StatePopulationEntity spe " +
             "INNER JOIN FETCH StateEntity se ON se.id = spe.state.id " +
             "WHERE se.shortName IN (:states)"
     )

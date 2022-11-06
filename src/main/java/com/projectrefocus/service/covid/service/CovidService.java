@@ -12,9 +12,9 @@ import java.util.List;
 
 public interface CovidService {
 
-    List<CovidMetricDto> getCovidCasesData(List<String> states, DataOrientation orientation, Date startDate);
-    List<CovidMetricDto> getCovidDeathsData(List<String> states, DataOrientation orientation, Date startDate);
-    List<CovidMetricDto> getCovidTestsData(List<String> states, DataOrientation orientation, Date startDate);
+    List<MetricDto> getCovidCasesData(List<String> states, DataOrientation orientation, Date startDate);
+    List<MetricDto> getCovidDeathsData(List<String> states, DataOrientation orientation, Date startDate);
+    List<MetricDto> getCovidTestsData(List<String> states, DataOrientation orientation, Date startDate);
     List<CovidMetricDto> getCovidVaccinationsData(List<String> states, SubCategory subCategory, DataOrientation orientation, Date startDate);
 
     List<MetricDto> getCovidBehindBarsData(List<String> states, PrimaryCategory primaryCategory, SecondaryCategory secondaryCategory, DataOrientation orientation, Date startDate);

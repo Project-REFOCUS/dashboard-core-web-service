@@ -1,6 +1,5 @@
 package com.projectrefocus.service.covid.repository;
 
-import com.projectrefocus.service.covid.entity.CovidStateCasesEntity;
 import com.projectrefocus.service.covid.entity.CovidStateDeathsEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

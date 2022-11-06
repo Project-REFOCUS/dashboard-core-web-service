@@ -27,7 +27,7 @@ public class CovidController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/cases")
-    public List<CovidMetricDto> getCovidCases(
+    public List<MetricDto> getCovidCases(
             @RequestParam(name = "states") List<String> states,
             @RequestParam(name = "orientation") DataOrientation orientation,
             // TODO: Look into a solution for fixing timezone issue creating off by one error
@@ -36,7 +36,7 @@ public class CovidController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/deaths")
-    public List<CovidMetricDto> getCovidDeaths(
+    public List<MetricDto> getCovidDeaths(
             @RequestParam(name = "states") List<String> states,
             @RequestParam(name = "orientation") DataOrientation orientation,
             // TODO: Look into a solution for fixing timezone issue creating off by one error
@@ -45,7 +45,7 @@ public class CovidController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/tests")
-    public List<CovidMetricDto> getCovidTests(
+    public List<MetricDto> getCovidTests(
             @RequestParam(name = "states") List<String> states,
             @RequestParam(name = "orientation") DataOrientation orientation,
             // TODO: Look into a solution for fixing timezone issue creating off by one error

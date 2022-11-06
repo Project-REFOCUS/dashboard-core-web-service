@@ -1,6 +1,7 @@
 package com.projectrefocus.service.covid.entity;
 
 import com.projectrefocus.service.calendar.entity.CalendarDateEntity;
+import com.projectrefocus.service.common.entity.MetricEntity;
 import com.projectrefocus.service.covid.dto.CovidMetricDto;
 import com.projectrefocus.service.geography.entity.StateEntity;
 import org.hibernate.annotations.Fetch;
@@ -17,7 +18,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "state_cases")
-public class CovidStateCasesEntity {
+public class CovidStateCasesEntity implements MetricEntity {
 
     @Id
     @Column(name = "id")
@@ -65,6 +66,10 @@ public class CovidStateCasesEntity {
 
     public StateEntity getState() {
         return state;
+    }
+
+    public Integer getValue() {
+        return cases;
     }
 
     public CovidMetricDto toDto() {
