@@ -10,6 +10,8 @@ import com.projectrefocus.service.population.service.PopulationService;
 import com.projectrefocus.service.request.enums.DataOrientation;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -19,10 +21,12 @@ public class CovidDeathsService {
 
     private final CovidStateDeathsRepository covidStateDeathsRepository;
     private final PopulationService populationService;
+    private final EntityManager em;
 
-    public CovidDeathsService(CovidStateDeathsRepository covidStateDeathsRepository, PopulationService populationService) {
+    public CovidDeathsService(CovidStateDeathsRepository covidStateDeathsRepository, PopulationService populationService, EntityManager em) {
         this.covidStateDeathsRepository = covidStateDeathsRepository;
         this.populationService = populationService;
+        this.em = em;
     }
 
     private Integer getAccumulatedStartingAggregate(Date startDate, List<String> states) {
@@ -31,11 +35,27 @@ public class CovidDeathsService {
                 covidStateDeathsRepository.aggregatedStateDeathsUntilDate(states, startDate);
     }
 
+    private List<CovidStateDeathsEntity> getWeeklyDeathsOnOrAfterDate(List<String> states, Date startDate, Boolean allStates) {
+        TypedQuery<CovidStateDeathsEntity> q = em.createNamedQuery(allStates ? "allWeeklyDeaths" : "stateWeeklyDeaths", CovidStateDeathsEntity.class);
+        q.setParameter("startDate", startDate);
+        if (!allStates) {
+            q.setParameter("states", states);
+        }
+        return q.getResultList();
+    }
+
+    private List<CovidStateDeathsEntity> getDeathsEntityData(List<String> states, DataOrientation orientation, Date startDate, Boolean allStates) {
+        return switch (orientation) {
+            case weekly,weeklyPer100K -> getWeeklyDeathsOnOrAfterDate(states, startDate, allStates);
+            default -> allStates ?
+                    covidStateDeathsRepository.getAllDeathsOnOrAfterDate(CovidServiceUtils.adjustedDate(startDate, orientation)) :
+                    covidStateDeathsRepository.getStateDeathsOnOrAfterDate(states, CovidServiceUtils.adjustedDate(startDate, orientation));
+        };
+    }
+
     public List<MetricDto> getData(List<String> states, DataOrientation orientation, Date startDate) {
         boolean fetchForAllStates = states.isEmpty();
-        List<CovidStateDeathsEntity> deaths = fetchForAllStates ?
-                covidStateDeathsRepository.getAllDeathsOnOrAfterDate(CovidServiceUtils.adjustedDate(startDate, orientation)) :
-                covidStateDeathsRepository.getStateDeathsOnOrAfterDate(states, CovidServiceUtils.adjustedDate(startDate, orientation));
+        List<CovidStateDeathsEntity> deaths = getDeathsEntityData(states, orientation, startDate, fetchForAllStates);
         switch (orientation) {
             case cumulative:
                 Integer startingAggregate = fetchForAllStates ?
@@ -89,6 +109,13 @@ public class CovidDeathsService {
             case daily14DayAvgPer100K:
                 denominator = populationService.aggregatedPopulation(states);
                 return CovidMetricTransformer.toDailyNDayAveragePer100K(deaths, 14, denominator);
+
+            case weekly:
+                return CovidDeathsMetricTransformer.toWeekly(deaths);
+
+            case weeklyPer100K:
+                denominator = populationService.aggregatedPopulation(states);
+                return CovidDeathsMetricTransformer.toWeeklyPer100K(deaths, denominator);
 
             case percentChangeInDailyOver7:
                 return CovidMetricTransformer.toDailyPercentChangeInNDayAverage(deaths, 7);

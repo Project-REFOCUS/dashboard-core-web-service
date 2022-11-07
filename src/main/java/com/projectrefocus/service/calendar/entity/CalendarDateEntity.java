@@ -19,7 +19,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "calendar_date")
-public class CalendarDateEntity {
+public class CalendarDateEntity implements Comparable<CalendarDateEntity> {
 
     @Id
     @Column(name = "id")
@@ -105,5 +105,15 @@ public class CalendarDateEntity {
 
     public List<RacismDeclarationEntity> getDeclarations() {
         return declarations;
+    }
+
+    public int compareTo(CalendarDateEntity entity) {
+        if (entity == null || entity.getDate() == null) {
+            return 1;
+        }
+        if (this.getDate() == null) {
+            return -1;
+        }
+        return this.getDate().compareTo(entity.getDate());
     }
 }

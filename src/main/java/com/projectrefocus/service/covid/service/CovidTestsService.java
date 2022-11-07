@@ -9,6 +9,8 @@ import com.projectrefocus.service.population.service.PopulationService;
 import com.projectrefocus.service.request.enums.DataOrientation;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -18,17 +20,35 @@ public class CovidTestsService {
 
     private final CovidStateTestsRepository covidStateTestsRepository;
     private final PopulationService populationService;
+    private final EntityManager em;
 
-    public CovidTestsService(CovidStateTestsRepository covidStateTestsRepository, PopulationService populationService) {
+    public CovidTestsService(CovidStateTestsRepository covidStateTestsRepository, PopulationService populationService, EntityManager em) {
         this.covidStateTestsRepository = covidStateTestsRepository;
         this.populationService = populationService;
+        this.em = em;
+    }
+
+    private List<CovidStateTestsEntity> getWeeklyTestsOnOrAfterDate(List<String> states, Date startDate, Boolean allStates) {
+        TypedQuery<CovidStateTestsEntity> q = em.createNamedQuery(allStates ? "allWeeklyTests" : "stateWeeklyTests", CovidStateTestsEntity.class);
+        q.setParameter("startDate", startDate);
+        if (!allStates) {
+            q.setParameter("states", states);
+        }
+        return q.getResultList();
+    }
+
+    private List<CovidStateTestsEntity> getTestsEntityData(List<String> states, DataOrientation orientation, Date startDate, Boolean allStates) {
+        return switch (orientation) {
+            case weekly, weeklyPer100K -> getWeeklyTestsOnOrAfterDate(states, startDate, allStates);
+            default -> allStates ?
+                    covidStateTestsRepository.getAllTestsOnOrAfterDate(CovidServiceUtils.adjustedDate(startDate, orientation)) :
+                    covidStateTestsRepository.getStateCasesOnOrAfterDate(states, CovidServiceUtils.adjustedDate(startDate, orientation));
+        };
     }
 
     public List<MetricDto> getData(List<String> states, DataOrientation orientation, Date startDate) {
         boolean fetchForAllStates = states.isEmpty();
-        List<CovidStateTestsEntity> tests = states.isEmpty() ?
-                covidStateTestsRepository.getAllTestsOnOrAfterDate(CovidServiceUtils.adjustedDate(startDate, orientation)) :
-                covidStateTestsRepository.getStateCasesOnOrAfterDate(states, CovidServiceUtils.adjustedDate(startDate, orientation));
+        List<CovidStateTestsEntity> tests = getTestsEntityData(states, orientation, startDate, fetchForAllStates);
         switch (orientation) {
             case cumulative:
                 Integer startingAggregate = fetchForAllStates ?
@@ -56,6 +76,13 @@ public class CovidTestsService {
             case daily14DayAvgPer100K:
                 denominator = populationService.aggregatedPopulation(states);
                 return CovidTestsMetricTransformer.toDailyNDayAveragePer100K(tests, 14, denominator);
+
+            case weekly:
+                return CovidTestsMetricTransformer.toWeekly(tests);
+
+            case weeklyPer100K:
+                denominator = populationService.aggregatedPopulation(states);
+                return CovidTestsMetricTransformer.toWeeklyPer100K(tests, denominator);
 
             case percentChangeInDailyOver7:
                 return CovidTestsMetricTransformer.toDailyPercentChangeInNDayAverage(tests, 7);

@@ -35,8 +35,16 @@ public class CovidMetricTransformer extends MetricTransformer {
         return toMetricDtoList(sortedListOfUniqueDates, aggregateByDate(entityList));
     }
 
+    public static List<MetricDto> toWeekly(List<? extends MetricEntity> entityList) {
+        return entityList.stream().map(MetricEntity::toDto).collect(Collectors.toList());
+    }
+
     public static List<MetricDto> toDailyPer100K(List<? extends MetricEntity> entityList, Integer denominator) {
         return toDaily(entityList).stream().peek(dto -> dto.setValue(calculateValuePer100K(dto.getValue(), denominator))).collect(Collectors.toList());
+    }
+
+    public static List<MetricDto> toWeeklyPer100K(List<? extends MetricEntity> entityList, Integer denominator) {
+        return entityList.stream().map(MetricEntity::toDto).peek(dto -> dto.setValue(calculateValuePer100K(dto.getValue(), denominator))).collect(Collectors.toList());
     }
 
     protected static Integer calculateValuePer100K(Integer value, Integer denominator) {
@@ -124,33 +132,6 @@ public class CovidMetricTransformer extends MetricTransformer {
     public static List<MetricDto> toDailyPercentChangeInNDayAverage(List<? extends MetricEntity> entityList, int nDay) {
         List<MetricDto> results = toDailyNDayAverage(entityList, nDay);
         return toPercentChangeInValueV2(results);
-    }
-
-    protected static List<CovidMetricDto> toNDayAverageCovidMetricDtoList(List<CovidMetricDto> dtoList, int nDay) {
-        List<Integer> values = new LinkedList<>();
-        int index = 0;
-        int sum = 0;
-
-        List<CovidMetricDto> results = new ArrayList<>();
-        for (CovidMetricDto dto : dtoList) {
-            if (index < nDay) {
-                values.add(dto.getValue());
-                sum += dto.getValue();
-                index++;
-            }
-            else {
-                CovidMetricDto metricDto = new CovidMetricDto();
-                metricDto.setDate(dto.getDate());
-                metricDto.setValue(sum / nDay);
-                results.add(metricDto);
-
-                values.add(dto.getValue());
-                sum += dto.getValue();
-                sum -= values.get(0);
-                values.remove(0);
-            }
-        }
-        return results;
     }
 
     protected static List<MetricDto> toNDayAverageMetricDtoList(List<MetricDto> dtoList, int nDay) {

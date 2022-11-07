@@ -4,6 +4,7 @@ import com.projectrefocus.service.covid.entity.CovidStateCasesEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import javax.persistence.NamedNativeQuery;
 import java.util.Date;
 import java.util.List;
 
@@ -18,6 +19,25 @@ public interface CovidStateCasesRepository extends JpaRepository<CovidStateCases
             "WHERE cdate.date > :startDate"
     )
     List<CovidStateCasesEntity> getAllCasesOnOrAfterDate(Date startDate);
+
+//    @Query(
+//            "SELECT MIN(cdate), SUM(csce.cases) FROM CovidStateCasesEntity csce " +
+//            "INNER JOIN FETCH CalendarDateEntity cdate ON cdate.id = csce.date.id " +
+//            "INNER JOIN FETCH StateEntity se ON se.id = csce.state.id " +
+//            "WHERE cdate.date > :startDate " +
+//            "GROUP BY CONCAT_WS('_', csce.date.weekNumber, DATE_FORMAT(csce.date, '%Y'))"
+//    )
+//    @Query(name = "WeeklyCases", nativeQuery = true)
+//    List<CovidStateCasesEntity> getWeeklyCasesOrAfterDate(Date startDate);
+
+    @Query(
+            "SELECT MIN(cdate), SUM(csce.cases) FROM CovidStateCasesEntity csce " +
+            "INNER JOIN FETCH CalendarDateEntity cdate ON cdate.id = csce.date.id " +
+            "INNER JOIN FETCH StateEntity se ON se.id = csce.state.id " +
+            "WHERE cdate.date > :startDate AND se.shortName IN (:states) " +
+            "GROUP BY CONCAT_WS('_', csce.date.weekNumber, DATE_FORMAT(csce.date, '%Y'))"
+    )
+    List<CovidStateCasesEntity> getStateWeeklyCasesOnOrAfterDate(List<String> states, Date startDate);
 
     @Query(
             "SELECT CAST(COALESCE(SUM(csce.cases), 0) AS integer) FROM CovidStateCasesEntity csce " +
