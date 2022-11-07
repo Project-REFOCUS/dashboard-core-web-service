@@ -11,7 +11,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 @SqlResultSetMappings(value = {
-        @SqlResultSetMapping(name = "WeeklyCases", classes = {
+        @SqlResultSetMapping(name = "GroupedCases", classes = {
                 @ConstructorResult(
                         targetClass = CovidStateCasesEntity.class,
                         columns = {
@@ -25,14 +25,30 @@ import java.util.Date;
         name = "allWeeklyCases",
         query = "SELECT MIN(cdate.date) as date, SUM(csce.cases) as cases, CONCAT_WS('_', cdate.week_number, DATE_FORMAT(cdate.date, '%Y')) as calendar_week " +
                 "FROM state_cases csce, calendar_date cdate WHERE cdate.id = csce.calendar_date_id AND cdate.date > :startDate GROUP BY calendar_week",
-        resultSetMapping = "WeeklyCases"
+        resultSetMapping = "GroupedCases"
 )
 @NamedNativeQuery(
         name = "stateWeeklyCases",
         query = "SELECT MIN(cdate.date) as date, SUM(csce.cases) as cases, CONCAT_WS('_', cdate.week_number, DATE_FORMAT(cdate.date, '%Y')) as calendar_week " +
                 "FROM state_cases csce, state s, calendar_date cdate WHERE cdate.id = csce.calendar_date_id AND csce.state_id = s.id AND cdate.date > :startDate " +
                 "AND s.short_name IN (:states) GROUP BY calendar_week",
-        resultSetMapping = "WeeklyCases"
+        resultSetMapping = "GroupedCases"
+)
+@NamedNativeQuery(
+        name = "allMonthlyCases",
+        query = "SELECT MIN(cdate.date) as date, SUM(csce.cases) as cases, CONCAT_WS('_', cmonth.short_name, DATE_FORMAT(cdate.date, '%Y')) as month_by_year " +
+                "FROM state_cases csce, calendar_date cdate, calendar_month cmonth " +
+                "WHERE cdate.id = csce.calendar_date_id AND cmonth.id = cdate.calendar_month_id AND cdate.date > :startDate " +
+                "GROUP BY month_by_year ORDER BY date",
+        resultSetMapping = "GroupedCases"
+)
+@NamedNativeQuery(
+        name = "stateMonthlyCases",
+        query = "SELECT MIN(cdate.date) as date, SUM(csce.cases) as cases, CONCAT_WS('_', cmonth.short_name, DATE_FORMAT(cdate.date, '%Y')) as month_by_year " +
+                "FROM state_cases csce, state s, calendar_date cdate, calendar_month cmonth " +
+                "WHERE cdate.id = csce.calendar_date_id AND cmonth.id = cdate.calendar_month_id AND s.id = csce.state_id AND cdate.date > :startDate AND s.short_name IN (:states) " +
+                "GROUP BY month_by_year ORDER BY date",
+        resultSetMapping = "GroupedCases"
 )
 @Entity
 @Table(name = "state_cases")

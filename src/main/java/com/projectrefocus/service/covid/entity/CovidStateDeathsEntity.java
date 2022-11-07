@@ -11,7 +11,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 @SqlResultSetMappings(value = {
-        @SqlResultSetMapping(name = "WeeklyDeaths", classes = {
+        @SqlResultSetMapping(name = "GroupedDeaths", classes = {
                 @ConstructorResult(
                         targetClass = CovidStateDeathsEntity.class,
                         columns = {
@@ -25,14 +25,30 @@ import java.util.Date;
         name = "allWeeklyDeaths",
         query = "SELECT MIN(cdate.date) as date, SUM(csde.deaths) as deaths, CONCAT_WS('_', cdate.week_number, DATE_FORMAT(cdate.date, '%Y')) as calendar_week " +
                 "FROM state_deaths csde, calendar_date cdate WHERE cdate.id = csde.calendar_date_id AND cdate.date > :startDate GROUP BY calendar_week",
-        resultSetMapping = "WeeklyDeaths"
+        resultSetMapping = "GroupedDeaths"
 )
 @NamedNativeQuery(
         name = "stateWeeklyDeaths",
         query = "SELECT MIN(cdate.date) as date, SUM(csde.deaths) as deaths, CONCAT_WS('_', cdate.week_number, DATE_FORMAT(cdate.date, '%Y')) as calendar_week " +
-                "FROM state_deaths csde, state s,  calendar_date cdate WHERE cdate.id = csde.calendar_date_id AND csde.state_id = s.id AND cdate.date > :startDate " +
+                "FROM state_deaths csde, state s, calendar_date cdate WHERE cdate.id = csde.calendar_date_id AND csde.state_id = s.id AND cdate.date > :startDate " +
                 "AND s.short_name IN (:states) GROUP BY calendar_week",
-        resultSetMapping = "WeeklyDeaths"
+        resultSetMapping = "GroupedDeaths"
+)
+@NamedNativeQuery(
+        name = "allMonthlyDeaths",
+        query = "SELECT MIN(cdate.date) as date, SUM(csde.deaths) as deaths, CONCAT_WS('_', cmonth.short_name, DATE_FORMAT(cdate.date, '%Y')) as month_by_year " +
+                "FROM state_deaths csde, calendar_date cdate, calendar_month cmonth " +
+                "WHERE cdate.id = csde.calendar_date_id AND cmonth.id = cdate.calendar_month_id AND cdate.date > :startDate " +
+                "GROUP BY month_by_year ORDER BY date",
+        resultSetMapping = "GroupedDeaths"
+)
+@NamedNativeQuery(
+        name = "stateMonthlyDeaths",
+        query = "SELECT MIN(cdate.date) as date, SUM(csde.deaths) as deaths, CONCAT_WS('_', cmonth.short_name, DATE_FORMAT(cdate.date, '%Y')) as month_by_year " +
+                "FROM state_deaths csde, state s, calendar_date cdate, calendar_month cmonth " +
+                "WHERE cdate.id = csde.calendar_date_id AND cmonth.id = cdate.calendar_month_id AND s.id = csde.state_id AND cdate.date  > :startDate AND s.short_name IN (:states) " +
+                "GROUP BY month_by_year ORDER BY date",
+        resultSetMapping = "GroupedDeaths"
 )
 @Entity
 @Table(name = "state_deaths")

@@ -39,11 +39,19 @@ public class CovidMetricTransformer extends MetricTransformer {
         return entityList.stream().map(MetricEntity::toDto).collect(Collectors.toList());
     }
 
+    public static List<MetricDto> toMonthly(List<? extends MetricEntity> entityList) {
+        return entityList.stream().map(MetricEntity::toDto).collect(Collectors.toList());
+    }
+
     public static List<MetricDto> toDailyPer100K(List<? extends MetricEntity> entityList, Integer denominator) {
         return toDaily(entityList).stream().peek(dto -> dto.setValue(calculateValuePer100K(dto.getValue(), denominator))).collect(Collectors.toList());
     }
 
     public static List<MetricDto> toWeeklyPer100K(List<? extends MetricEntity> entityList, Integer denominator) {
+        return entityList.stream().map(MetricEntity::toDto).peek(dto -> dto.setValue(calculateValuePer100K(dto.getValue(), denominator))).collect(Collectors.toList());
+    }
+
+    public static List<MetricDto> toMonthlyPer100K(List<? extends MetricEntity> entityList, Integer denominator) {
         return entityList.stream().map(MetricEntity::toDto).peek(dto -> dto.setValue(calculateValuePer100K(dto.getValue(), denominator))).collect(Collectors.toList());
     }
 

@@ -11,7 +11,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 @SqlResultSetMappings(value = {
-        @SqlResultSetMapping(name = "WeeklyTests", classes = {
+        @SqlResultSetMapping(name = "GroupedTests", classes = {
                 @ConstructorResult(
                         targetClass = CovidStateTestsEntity.class,
                         columns = {
@@ -25,14 +25,30 @@ import java.util.Date;
         name = "allWeeklyTests",
         query = "SELECT MIN(cdate.date) as date, SUM(cste.tests) as tests, CONCAT_WS('_', cdate.week_number, DATE_FORMAT(cdate.date, '%Y')) as calendar_week " +
                 "FROM state_tests cste, calendar_date cdate WHERE cdate.id = cste.calendar_date_id AND cdate.date > :startDate GROUP BY calendar_week",
-        resultSetMapping = "WeeklyTests"
+        resultSetMapping = "GroupedTests"
 )
 @NamedNativeQuery(
         name = "stateWeeklyTests",
         query = "SELECT MIN(cdate.date) as date, SUM(cste.tests) as tests, CONCAT_WS('_', cdate.week_number, DATE_FORMAT(cdate.date, '%Y')) as calendar_week " +
                 "FROM state_tests cste, state s, calendar_date cdate WHERE cdate.id = cste.calendar_date_id AND cste.state_id = s.id AND cdate.date > :startDate " +
                 "AND s.short_name IN (:states) GROUP BY calendar_week",
-        resultSetMapping = "WeeklyTests"
+        resultSetMapping = "GroupedTests"
+)
+@NamedNativeQuery(
+        name = "allMonthlyTests",
+        query = "SELECT MIN(cdate.date) as date, SUM(cste.tests) as tests, CONCAT_WS('_', cmonth.short_name, DATE_FORMAT(cdate.date, '%Y')) as month_by_year " +
+                "FROM state_tests cste, calendar_date cdate, calendar_month cmonth " +
+                "WHERE cdate.id = cste.calendar_date_id AND cmonth.id = cdate.calendar_month_id AND cdate.date > :startDate " +
+                "GROUP BY month_by_year ORDER BY date",
+        resultSetMapping = "GroupedTests"
+)
+@NamedNativeQuery(
+        name = "stateMonthlyTests",
+        query = "SELECT MIN(cdate.date) as date, SUM(cste.tests) as tests, CONCAT_WS('_', cmonth.short_name, DATE_FORMAT(cdate.date, '%Y')) as month_by_year " +
+                "FROM state_tests cste, state s, calendar_date cdate, calendar_month cmonth " +
+                "WHERE cdate.id = cste.calendar_date_id AND cmonth.id = cdate.calendar_month_id AND s.id = cste.state_id AND cdate.date > :startDate AND s.short_name IN (:states) " +
+                "GROUP BY month_by_year ORDER BY date",
+        resultSetMapping = "GroupedTests"
 )
 @Entity
 @Table(name = "state_tests")

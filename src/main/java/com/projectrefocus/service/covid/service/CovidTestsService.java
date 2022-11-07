@@ -37,9 +37,19 @@ public class CovidTestsService {
         return q.getResultList();
     }
 
+    private List<CovidStateTestsEntity> getMonthlyTestsOnOrAfterDate(List<String> states, Date startDate, Boolean allStates) {
+        TypedQuery<CovidStateTestsEntity> q = em.createNamedQuery(allStates ? "allMonthly" : "stateMonthlyTests", CovidStateTestsEntity.class);
+        q.setParameter("startDate", startDate);
+        if (!allStates) {
+            q.setParameter("states", states);
+        }
+        return q.getResultList();
+    }
+
     private List<CovidStateTestsEntity> getTestsEntityData(List<String> states, DataOrientation orientation, Date startDate, Boolean allStates) {
         return switch (orientation) {
             case weekly, weeklyPer100K -> getWeeklyTestsOnOrAfterDate(states, startDate, allStates);
+            case monthly, monthlyPer100K -> getMonthlyTestsOnOrAfterDate(states, startDate, allStates);
             default -> allStates ?
                     covidStateTestsRepository.getAllTestsOnOrAfterDate(CovidServiceUtils.adjustedDate(startDate, orientation)) :
                     covidStateTestsRepository.getStateCasesOnOrAfterDate(states, CovidServiceUtils.adjustedDate(startDate, orientation));
@@ -83,6 +93,13 @@ public class CovidTestsService {
             case weeklyPer100K:
                 denominator = populationService.aggregatedPopulation(states);
                 return CovidTestsMetricTransformer.toWeeklyPer100K(tests, denominator);
+
+            case monthly:
+                return CovidTestsMetricTransformer.toMonthly(tests);
+
+            case monthlyPer100K:
+                denominator = populationService.aggregatedPopulation(states);
+                return CovidTestsMetricTransformer.toMonthlyPer100K(tests, denominator);
 
             case percentChangeInDailyOver7:
                 return CovidTestsMetricTransformer.toDailyPercentChangeInNDayAverage(tests, 7);

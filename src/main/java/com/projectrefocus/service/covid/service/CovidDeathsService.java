@@ -44,9 +44,19 @@ public class CovidDeathsService {
         return q.getResultList();
     }
 
+    private List<CovidStateDeathsEntity> getMonthlyDeathsOnOrAfterDate(List<String> states, Date startDate, Boolean allStates) {
+        TypedQuery<CovidStateDeathsEntity> q = em.createNamedQuery(allStates ? "allMonthlyDeaths" : "stateMonthlyDeaths", CovidStateDeathsEntity.class);
+        q.setParameter("startDate", startDate);
+        if (!allStates) {
+            q.setParameter("states", states);
+        }
+        return q.getResultList();
+    }
+
     private List<CovidStateDeathsEntity> getDeathsEntityData(List<String> states, DataOrientation orientation, Date startDate, Boolean allStates) {
         return switch (orientation) {
             case weekly,weeklyPer100K -> getWeeklyDeathsOnOrAfterDate(states, startDate, allStates);
+            case monthly, monthlyPer100K -> getMonthlyDeathsOnOrAfterDate(states, startDate, allStates);
             default -> allStates ?
                     covidStateDeathsRepository.getAllDeathsOnOrAfterDate(CovidServiceUtils.adjustedDate(startDate, orientation)) :
                     covidStateDeathsRepository.getStateDeathsOnOrAfterDate(states, CovidServiceUtils.adjustedDate(startDate, orientation));
@@ -116,6 +126,13 @@ public class CovidDeathsService {
             case weeklyPer100K:
                 denominator = populationService.aggregatedPopulation(states);
                 return CovidDeathsMetricTransformer.toWeeklyPer100K(deaths, denominator);
+
+            case monthly:
+                return CovidDeathsMetricTransformer.toMonthly(deaths);
+
+            case monthlyPer100K:
+                denominator = populationService.aggregatedPopulation(states);
+                return CovidDeathsMetricTransformer.toMonthlyPer100K(deaths, denominator);
 
             case percentChangeInDailyOver7:
                 return CovidMetricTransformer.toDailyPercentChangeInNDayAverage(deaths, 7);
