@@ -22,11 +22,11 @@ public class CovidDeathsMetricTransformer extends CovidMetricTransformer {
 
     public static List<MetricDto> toMortalityRatePercentChange(List<CovidStateDeathsEntity> entityList, Integer initialAggregate, Integer denominator) {
         List<MetricDto> deaths = toMortalityRate(entityList, initialAggregate, denominator);
-        return toPercentChangeInValueV2(deaths);
+        return toPercentChangeInValue(deaths);
     }
 
     public static List<MetricDto> toMortalityRatePercentChangeOverNDays(List<CovidStateDeathsEntity> entityList, Integer initialAggregate, Integer denominator, Integer nDays) {
         List<MetricDto> deaths = toMortalityRateOverNDays(entityList, initialAggregate, denominator, nDays);
-        return toPercentChangeInValueV2(deaths);
+        return toPercentChangeInValue(deaths);
     }
 }

@@ -1,7 +1,10 @@
 package com.projectrefocus.service.covid.entity;
 
 import com.projectrefocus.service.calendar.entity.CalendarDateEntity;
+import com.projectrefocus.service.common.dto.MetricDto;
+import com.projectrefocus.service.common.entity.MultiMetricEntity;
 import com.projectrefocus.service.geography.entity.StateEntity;
+import com.projectrefocus.service.request.enums.SubCategory;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -15,7 +18,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "state_vaccinations")
-public class CovidStateVaccinationsEntity {
+public class CovidStateVaccinationsEntity implements MultiMetricEntity {
 
     @Id
     @Column(name = "id")
@@ -97,5 +100,22 @@ public class CovidStateVaccinationsEntity {
 
     public StateEntity getState() {
         return state;
+    }
+
+    public Integer getValue(SubCategory...categories) {
+        return switch (categories[0]) {
+            case distributed -> distributed;
+            case administered -> administered;
+            case administeredOneDose -> administeredOneDose;
+            case administeredTwoDose -> administeredTwoDose;
+            default -> null;
+        };
+    }
+
+    public MetricDto toDto(SubCategory...categories) {
+        MetricDto dto = new MetricDto();
+        dto.setDate(date.getDate());
+        dto.setValue(getValue(categories));
+        return dto;
     }
 }

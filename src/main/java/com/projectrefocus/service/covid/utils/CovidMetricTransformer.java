@@ -55,14 +55,6 @@ public class CovidMetricTransformer extends MetricTransformer {
         return entityList.stream().map(MetricEntity::toDto).peek(dto -> dto.setValue(calculateValuePer100K(dto.getValue(), denominator))).collect(Collectors.toList());
     }
 
-    protected static Integer calculateValuePer100K(Integer value, Integer denominator) {
-        BigDecimal decimalValue = new BigDecimal(value);
-        BigDecimal decimalDenominator = new BigDecimal(denominator);
-        BigDecimal result = decimalValue.divide(decimalDenominator, MathContext.DECIMAL32).multiply(new BigDecimal(PER_100K));
-
-        return result.intValue();
-    }
-
     public static List<MetricDto> toDailyNDayAverage(List<? extends MetricEntity> entityList, int nDay) {
         List<MetricDto> metrics = toDaily(entityList);
         List<Integer> values = new LinkedList<>();
@@ -91,45 +83,6 @@ public class CovidMetricTransformer extends MetricTransformer {
         return results;
     }
 
-    protected static List<CovidMetricDto> toCovidMetricDtoList(List<Date> dates, Map<Date, Integer> aggregationByDate) {
-        return dates.stream().map(date -> {
-            CovidMetricDto metricDto = new CovidMetricDto();
-            metricDto.setValue(aggregationByDate.get(date));
-            metricDto.setDate(date);
-
-            return metricDto;
-        }).collect(Collectors.toList());
-    }
-
-    public static List<MetricDto> toAccumulatedMetricDtoList(List<Date> dates, Map<Date, Integer> aggregatedByDate, Integer initialAggregate) {
-        List<MetricDto> results = new ArrayList<>();
-        Integer accumulation = initialAggregate;
-        for (Date uniqueDate : dates) {
-            MetricDto metricDto = new MetricDto();
-            accumulation += aggregatedByDate.get(uniqueDate);
-            metricDto.setValue(accumulation);
-            metricDto.setDate(uniqueDate);
-
-            results.add(metricDto);
-        }
-        return results;
-    }
-
-    protected static List<CovidMetricDto> toAccumulatedCovidMetricDtoList(List<Date> dates, Map<Date, Integer> aggregationByDate, Integer initialAggregate) {
-        List<CovidMetricDto> results = new ArrayList<>();
-        Integer accumulation = initialAggregate;
-        for (Date uniqueDate : dates) {
-            CovidMetricDto metricDto = new CovidMetricDto();
-            accumulation += aggregationByDate.get(uniqueDate);
-            metricDto.setValue(accumulation);
-            metricDto.setDate(uniqueDate);
-
-            results.add(metricDto);
-        }
-
-        return results;
-    }
-
     public static List<MetricDto> toDailyNDayAveragePer100K(List<? extends MetricEntity> entityList, int nDay, Integer denominator) {
         return toDailyNDayAverage(entityList, nDay)
                 .stream()
@@ -139,7 +92,7 @@ public class CovidMetricTransformer extends MetricTransformer {
 
     public static List<MetricDto> toDailyPercentChangeInNDayAverage(List<? extends MetricEntity> entityList, int nDay) {
         List<MetricDto> results = toDailyNDayAverage(entityList, nDay);
-        return toPercentChangeInValueV2(results);
+        return toPercentChangeInValue(results);
     }
 
     protected static List<MetricDto> toNDayAverageMetricDtoList(List<MetricDto> dtoList, int nDay) {
@@ -166,45 +119,6 @@ public class CovidMetricTransformer extends MetricTransformer {
                 values.remove(0);
             }
         }
-        return results;
-    }
-
-    private static Integer percentChange(int initial, int target) {
-        if (initial == 0) {
-            return initial;
-        }
-        BigDecimal targetMinusInitialDecimal = new BigDecimal(target - initial);
-        BigDecimal initialDecimal = new BigDecimal(initial);
-        BigDecimal result = targetMinusInitialDecimal.divide(initialDecimal, MathContext.DECIMAL32)
-                .multiply(BigDecimal.TEN).multiply(BigDecimal.TEN);
-        return result.intValue();
-    }
-
-    protected static List<CovidMetricDto> toPercentChangeInValue(List<CovidMetricDto> metricDtoList) {
-        List<CovidMetricDto> results = new ArrayList<>();
-        int previousValue = metricDtoList.remove(0).getValue();
-        for (CovidMetricDto dto : metricDtoList) {
-            int currentValue = dto.getValue();
-            dto.setValue(percentChange(previousValue, dto.getValue()));
-            results.add(dto);
-
-            previousValue = currentValue;
-        }
-
-        return results;
-    }
-
-    protected static List<MetricDto> toPercentChangeInValueV2(List<MetricDto> metricDtoList) {
-        List<MetricDto> results = new ArrayList<>();
-        int previousValue = metricDtoList.remove(0).getValue();
-        for (MetricDto dto : metricDtoList) {
-            int currentValue = dto.getValue();
-            dto.setValue(percentChange(previousValue, dto.getValue()));
-            results.add(dto);
-
-            previousValue = currentValue;
-        }
-
         return results;
     }
 

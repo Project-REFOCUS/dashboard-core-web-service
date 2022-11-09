@@ -43,7 +43,7 @@ public class CovidServiceImpl implements CovidService {
         return covidTestsService.getData(states, orientation, startDate);
     }
 
-    public List<CovidMetricDto> getCovidVaccinationsData(List<String> states, SubCategory subCategory, DataOrientation orientation, Date startDate) {
+    public List<MetricDto> getCovidVaccinationsData(List<String> states, SubCategory subCategory, DataOrientation orientation, Date startDate) {
         return covidVaccinationsService.getData(states, subCategory, orientation, startDate);
     }
 

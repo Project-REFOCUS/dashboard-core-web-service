@@ -72,7 +72,7 @@ public interface CovidStateVaccinationsRepository extends JpaRepository<CovidSta
                     "INNER JOIN FETCH CalendarDateEntity cdate ON cdate.id = csve.date.id " +
                     "WHERE cdate.date <= :targetDate"
     )
-    Integer aggregateAdministeredTwoDoseVaccinationsUntilDate(Date targetDate);
+    Integer aggregatedAdministeredTwoDoseVaccinationsUntilDate(Date targetDate);
 
     @Query(
             "SELECT csve, se, cdate, cmonth, cday FROM CovidStateVaccinationsEntity csve " +

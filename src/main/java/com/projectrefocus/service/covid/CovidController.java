@@ -54,7 +54,7 @@ public class CovidController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/vaccinations")
-    public List<CovidMetricDto> getCovidVaccinations(
+    public List<MetricDto> getCovidVaccinations(
             @RequestParam(name = "states") List<String> states,
             @RequestParam(name = "subCategory") SubCategory subCategory,
             @RequestParam(name = "orientation") DataOrientation orientation,
