@@ -4,7 +4,6 @@ import com.projectrefocus.service.common.dto.MetricDto;
 import com.projectrefocus.service.covid.entity.CovidStateCasesEntity;
 import com.projectrefocus.service.covid.repository.CovidStateCasesRepository;
 import com.projectrefocus.service.covid.utils.CovidCasesMetricTransformer;
-import com.projectrefocus.service.covid.utils.CovidMetricTransformer;
 import com.projectrefocus.service.covid.utils.CovidServiceUtils;
 import com.projectrefocus.service.population.service.PopulationService;
 import com.projectrefocus.service.request.enums.DataOrientation;

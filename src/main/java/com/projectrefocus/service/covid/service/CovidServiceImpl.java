@@ -18,7 +18,6 @@ public class CovidServiceImpl implements CovidService {
     private final CovidDeathsService covidDeathsService;
     private final CovidTestsService covidTestsService;
     private final CovidVaccinationsService covidVaccinationsService;
-
     private final CovidBehindBarsService covidBehindBarsService;
 
     public CovidServiceImpl(
@@ -48,7 +47,7 @@ public class CovidServiceImpl implements CovidService {
         return covidVaccinationsService.getData(states, subCategory, orientation, startDate);
     }
 
-    public List<MetricDto> getCovidBehindBarsData(List<String> states, PrimaryCategory primaryCategory, SecondaryCategory secondaryCategory, DataOrientation orientation, Date startDate) {
+    public List<MetricDto> getCovidBehindBarsData(List<String> states, SubCategory primaryCategory, SubCategory secondaryCategory, DataOrientation orientation, Date startDate) {
         return covidBehindBarsService.getData(states, primaryCategory, secondaryCategory, orientation, startDate);
     }
 }

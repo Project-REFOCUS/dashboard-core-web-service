@@ -1,7 +1,10 @@
 package com.projectrefocus.service.covid.entity;
 
 import com.projectrefocus.service.calendar.entity.CalendarDateEntity;
+import com.projectrefocus.service.common.dto.MetricDto;
+import com.projectrefocus.service.common.entity.MultiMetricEntity;
 import com.projectrefocus.service.geography.entity.StateEntity;
+import com.projectrefocus.service.request.enums.SubCategory;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -9,7 +12,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "covid_behind_bars")
-public class CovidBehindBarsEntity {
+public class CovidBehindBarsEntity implements MultiMetricEntity {
 
     @Id
     @Column(name = "id")
@@ -146,5 +149,35 @@ public class CovidBehindBarsEntity {
 
     public StateEntity getState() {
         return state;
+    }
+
+    public Integer getValue(SubCategory ...categories) {
+        if (categories.length == 2) {
+            switch (categories[0]) {
+                case residents:
+                    switch (categories[1]) {
+                        case cases -> { return residentCases; }
+                        case deaths -> { return residentDeaths; }
+                        case tests -> { return residentTests; }
+                        case administeredOneDose -> { return residentAdministeredOneDose; }
+                        case administeredTwoDose -> { return residentAdministeredTwoDose; }
+                    }
+                case staff:
+                    switch (categories[1]) {
+                        case cases -> { return staffCases; }
+                        case deaths -> { return staffDeaths; }
+                        case administeredOneDose -> { return staffAdministeredOneDose; }
+                        case administeredTwoDose -> { return staffAdministeredTwoDose; }
+                    }
+            }
+        }
+        return null;
+    }
+
+    public MetricDto toDto(SubCategory ...categories) {
+        MetricDto dto = new MetricDto();
+        dto.setValue(getValue(categories));
+        dto.setDate(date.getDate());
+        return dto;
     }
 }

@@ -21,5 +21,10 @@ public enum DataOrientation {
     mortalityRateOver14Days,
     percentChangeInMortalityRate,
     percentChangeInMortalityRateOver7,
-    percentChangeInMortalityRateOver14
+    percentChangeInMortalityRateOver14,
+
+    weeklyMortalityRate,
+    percentChangeInWeeklyMortalityRate,
+    monthlyMortalityRate,
+    percentChangeInMonthlyMortalityRate
 }

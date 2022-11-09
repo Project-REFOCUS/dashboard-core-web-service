@@ -65,8 +65,8 @@ public class CovidController {
     @RequestMapping(method = RequestMethod.GET, value = "/behindbars")
     public List<MetricDto> getCovidBehindBars(
             @RequestParam(name = "states") List<String> states,
-            @RequestParam(name = "primaryCategory") PrimaryCategory primaryCategory,
-            @RequestParam(name = "secondaryCategory") SecondaryCategory secondaryCategory,
+            @RequestParam(name = "primaryCategory") SubCategory primaryCategory,
+            @RequestParam(name = "secondaryCategory") SubCategory secondaryCategory,
             @RequestParam(name = "orientation") DataOrientation orientation,
             @RequestParam(name = "startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date startDate) {
         return covidService.getCovidBehindBarsData(states, primaryCategory, secondaryCategory, orientation, startDate);

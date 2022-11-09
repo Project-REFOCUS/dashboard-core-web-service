@@ -4,5 +4,10 @@ public enum SubCategory {
     distributed,
     administered,
     administeredOneDose,
-    administeredTwoDose
+    administeredTwoDose,
+    residents,
+    staff,
+    cases,
+    deaths,
+    tests,
 }

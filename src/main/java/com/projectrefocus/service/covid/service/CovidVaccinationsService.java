@@ -69,6 +69,7 @@ public class CovidVaccinationsService {
                             CovidVaccinationsMetricTransformer.toDailyAdministeredOneDoseVaccinations(vaccinations);
                     case administeredTwoDose ->
                             CovidVaccinationsMetricTransformer.toDailyAdministeredTwoDoseVaccinations(vaccinations);
+                    default -> new ArrayList<>();
                 };
 
             case dailyPer100K:
@@ -101,6 +102,7 @@ public class CovidVaccinationsService {
                             CovidVaccinationsMetricTransformer.toDailyAdministeredOneDoseVaccinationsNDayAverage(vaccinations, 7);
                     case administeredTwoDose ->
                             CovidVaccinationsMetricTransformer.toDailyAdministeredTwoDoseVaccinationsNDayAverage(vaccinations, 7);
+                    default -> new ArrayList<>();
                 };
 
             case daily14DayAvg:
@@ -113,6 +115,7 @@ public class CovidVaccinationsService {
                             CovidVaccinationsMetricTransformer.toDailyAdministeredOneDoseVaccinationsNDayAverage(vaccinations, 14);
                     case administeredTwoDose ->
                             CovidVaccinationsMetricTransformer.toDailyAdministeredTwoDoseVaccinationsNDayAverage(vaccinations, 14);
+                    default -> new ArrayList<>();
                 };
 
             case daily7DayAvgPer100K:
@@ -122,6 +125,7 @@ public class CovidVaccinationsService {
                     case administered -> CovidVaccinationsMetricTransformer.toDailyAdministeredNDayAveragePer100K(vaccinations, 7, denominator);
                     case administeredOneDose -> CovidVaccinationsMetricTransformer.toDailyAdministeredOneDoseNDayAveragePer100K(vaccinations, 7, denominator);
                     case administeredTwoDose -> CovidVaccinationsMetricTransformer.toDailyAdministeredTwoDoseNDayAveragePer100K(vaccinations, 7, denominator);
+                    default -> new ArrayList<>();
                 };
 
             case daily14DayAvgPer100K:
@@ -131,6 +135,7 @@ public class CovidVaccinationsService {
                     case administered -> CovidVaccinationsMetricTransformer.toDailyAdministeredNDayAveragePer100K(vaccinations, 14, denominator);
                     case administeredOneDose -> CovidVaccinationsMetricTransformer.toDailyAdministeredOneDoseNDayAveragePer100K(vaccinations, 14, denominator);
                     case administeredTwoDose -> CovidVaccinationsMetricTransformer.toDailyAdministeredTwoDoseNDayAveragePer100K(vaccinations, 14, denominator);
+                    default -> new ArrayList<>();
                 };
 
             case percentChangeInDailyOver7:
@@ -139,6 +144,7 @@ public class CovidVaccinationsService {
                     case administered -> CovidVaccinationsMetricTransformer.toDailyAdministeredVaccinationsPercentChangeNDayAverage(vaccinations, 7);
                     case administeredOneDose -> CovidVaccinationsMetricTransformer.toDailyAdministeredOneDoseVaccinationsPercentChangeNDayAverage(vaccinations, 7);
                     case administeredTwoDose -> CovidVaccinationsMetricTransformer.toDailyAdministeredTwoDoseVaccinationsPercentChangeNDayAverage(vaccinations, 7);
+                    default -> new ArrayList<>();
                 };
 
             case percentChangeInDailyOver14:
@@ -147,6 +153,7 @@ public class CovidVaccinationsService {
                     case administered -> CovidVaccinationsMetricTransformer.toDailyAdministeredVaccinationsPercentChangeNDayAverage(vaccinations, 14);
                     case administeredOneDose -> CovidVaccinationsMetricTransformer.toDailyAdministeredOneDoseVaccinationsPercentChangeNDayAverage(vaccinations, 14);
                     case administeredTwoDose -> CovidVaccinationsMetricTransformer.toDailyAdministeredTwoDoseVaccinationsPercentChangeNDayAverage(vaccinations, 14);
+                    default -> new ArrayList<>();
                 };
         }
 
