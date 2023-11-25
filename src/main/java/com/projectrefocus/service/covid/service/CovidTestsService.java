@@ -9,8 +9,8 @@ import com.projectrefocus.service.population.service.PopulationService;
 import com.projectrefocus.service.request.enums.DataOrientation;
 import org.springframework.stereotype.Component;
 
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;

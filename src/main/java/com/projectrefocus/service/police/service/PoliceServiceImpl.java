@@ -7,7 +7,7 @@ import com.projectrefocus.service.police.utils.PoliceTransformer;
 import com.projectrefocus.service.request.enums.DataOrientation;
 import org.springframework.stereotype.Component;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;

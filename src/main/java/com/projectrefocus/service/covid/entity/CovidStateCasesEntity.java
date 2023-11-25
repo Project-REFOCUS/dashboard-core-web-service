@@ -7,7 +7,7 @@ import com.projectrefocus.service.geography.entity.StateEntity;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.Date;
 
 @SqlResultSetMappings(value = {

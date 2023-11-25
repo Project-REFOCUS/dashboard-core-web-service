@@ -5,7 +5,7 @@ import com.projectrefocus.service.geography.entity.CityEntity;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "osha_complaints")

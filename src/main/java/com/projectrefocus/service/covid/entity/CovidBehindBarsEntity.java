@@ -8,7 +8,7 @@ import com.projectrefocus.service.request.enums.SubCategory;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "covid_behind_bars")

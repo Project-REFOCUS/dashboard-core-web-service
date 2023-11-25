@@ -4,7 +4,6 @@ import com.projectrefocus.service.covid.entity.CovidStateCasesEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import javax.persistence.NamedNativeQuery;
 import java.util.Date;
 import java.util.List;
 

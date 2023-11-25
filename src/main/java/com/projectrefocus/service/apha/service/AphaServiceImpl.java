@@ -7,7 +7,7 @@ import com.projectrefocus.service.common.dto.MetricDto;
 import com.projectrefocus.service.request.enums.DataOrientation;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;

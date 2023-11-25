@@ -4,7 +4,7 @@ import com.projectrefocus.service.geography.dto.CountyDto;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "county")
