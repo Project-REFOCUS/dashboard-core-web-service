@@ -20,15 +20,15 @@ dependencies {
     implementation group: 'com.mysql', name: 'mysql-connector-j', version: '8.2.0'
 }
 
-task copy {
+tasks.register('copy') {
     doLast {
         copy {
             from 'build/libs/dashboard-core-web-service-' + version + '.jar'
             into 'docker'
 
-//            rename { String filename ->
-//                filename.replace('dashboard-core-web-service-' + version + '.jar', 'dashboard-core-web-service.jar')
-//            }
+            rename { String filename ->
+                filename.replace('dashboard-core-web-service-' + version + '.jar', 'dashboard-core-web-service.jar')
+            }
         }
     }
 }
