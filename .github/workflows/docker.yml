@@ -17,7 +17,7 @@ jobs:
       - name: Authorize DockerHub
         run: echo $DOCKERHUB_PASSWORD | docker login --username $DOCKERHUB_USERNAME --password-stdin
       - name: Docker build tag
-        run: docker build -t gscbinc/dashboard-core-web-service:$TAG .
+        run: docker build -t gscbinc/dashboard-core-web-service:$TAG docker
       - name: Docker push image
         run: docker push gscbinc/dashboard-core-web-service:$TAG
       - name: Create tag
