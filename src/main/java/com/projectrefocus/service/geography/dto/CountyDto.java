@@ -2,15 +2,14 @@ package com.projectrefocus.service.geography.dto;
 
 public class CountyDto {
 
-    private Short id;
+    private String id;
     private String name;
-    private String fips;
 
-    public void setId(Short id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public Short getId() {
+    public String getId() {
         return id;
     }
 
@@ -20,13 +19,5 @@ public class CountyDto {
 
     public String getName() {
         return name;
-    }
-
-    public void setFips(String fips) {
-        this.fips = fips;
-    }
-
-    public String getFips() {
-        return fips;
     }
 }

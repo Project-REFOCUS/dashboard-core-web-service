@@ -49,7 +49,7 @@ public class CityEntity {
 
     public CityDto toDto() {
         CityDto dto = new CityDto();
-        dto.setId(id);
+        dto.setId(id.toString());
         dto.setName(name);
 
         return dto;

@@ -1,10 +1,10 @@
-package com.projectrefocus.service.geography.dto;
+package com.projectrefocus.service.dundas.entity;
 
-public class StateDto {
+public class ProjectResponseEntity {
 
     private String id;
     private String name;
-    private String shortName;
+    private String projectId;
 
     public void setId(String id) {
         this.id = id;
@@ -22,11 +22,11 @@ public class StateDto {
         return name;
     }
 
-    public void setShortName(String shortName) {
-        this.shortName = shortName;
+    public void setProjectId(String projectId) {
+        this.projectId = projectId;
     }
 
-    public String getShortName() {
-        return shortName;
+    public String getProjectId() {
+        return projectId;
     }
 }

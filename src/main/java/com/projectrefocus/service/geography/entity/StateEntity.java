@@ -49,7 +49,7 @@ public class StateEntity {
 
     public StateDto toDto() {
         StateDto dto = new StateDto();
-        dto.setId(id);
+        dto.setId(id.toString());
         dto.setName(name);
         dto.setShortName(shortName);
 

@@ -60,9 +60,8 @@ public class CountyEntity {
 
     public CountyDto toDto() {
         CountyDto dto = new CountyDto();
-        dto.setId(id);
+        dto.setId(id.toString());
         dto.setName(name);
-        dto.setFips(fips);
 
         return dto;
     }

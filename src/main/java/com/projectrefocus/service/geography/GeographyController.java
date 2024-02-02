@@ -1,5 +1,8 @@
 package com.projectrefocus.service.geography;
 
+import com.projectrefocus.service.geography.dto.CityDto;
+import com.projectrefocus.service.geography.dto.CountyDto;
+import com.projectrefocus.service.geography.dto.GeographyDto;
 import com.projectrefocus.service.geography.dto.StateDto;
 import com.projectrefocus.service.geography.service.GeographyService;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,18 +22,26 @@ public class GeographyController {
         this.geographyService = geographyService;
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/states")
-    public List<StateDto> getUSStates() {
-        return geographyService.getUSStates();
+    @RequestMapping(method = RequestMethod.GET, value = "")
+    public List<GeographyDto> getGeography(
+            @RequestParam(value = "categoryId") String categoryId,
+            @RequestParam(value = "geographyId", required = false) String geographyId
+    ) {
+        return geographyService.getGeography(categoryId, geographyId);
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/counties")
-    public String getCountiesByState(@RequestParam(value = "stateId") Byte stateId) {
-        return String.format("{'us_county': 0 in state %s}", stateId);
+    @RequestMapping(method = RequestMethod.GET, value = "/states")
+    public List<StateDto> getStatesByCategory(@RequestParam(value = "categoryId") String categoryId) {
+        return geographyService.getStatesByCategory(categoryId);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value ="/counties")
+    public List<CountyDto> getCountiesByState(@RequestParam(value = "categoryId") String categoryId, @RequestParam(value = "stateId") String stateId) {
+        return geographyService.getCountiesByCategory(categoryId, stateId);
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/cities")
-    public String getCitiesByCounty(@RequestParam(value = "countyId") Short countyId) {
-        return String.format("{'us_city': 0 in county %s}", countyId);
+    public List<CityDto> getCitiesByCounty(@RequestParam(value = "categoryId") String categoryId, @RequestParam(value = "countyId") String countyId) {
+        return geographyService.getCitiesByCategory(categoryId, countyId);
     }
 }
