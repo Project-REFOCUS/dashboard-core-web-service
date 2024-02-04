@@ -85,6 +85,16 @@ public class GeographyServiceImpl implements GeographyService {
         }).toList();
     }
 
+    public List<GeographyDto> getStates() {
+        return stateRepository.findAll().stream().map(stateEntity -> {
+            GeographyDto dto = new GeographyDto();
+            dto.setId(stateEntity.getId().toString());
+            dto.setName(stateEntity.getName());
+
+            return dto;
+        }).toList();
+    }
+
     public List<GeographyDto> getGeography(String categoryId, String geographyId) {
         String metricSetId = getMetricSetIdFromCategory(categoryId);
         List<HierarchyMemberEntity> hierarchyMemberEntities = dundasHierarchyService.getHierarchyMembers(metricSetId, geographyId);

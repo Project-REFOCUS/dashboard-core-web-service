@@ -31,8 +31,8 @@ public class GeographyController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/states")
-    public List<StateDto> getStatesByCategory(@RequestParam(value = "categoryId") String categoryId) {
-        return geographyService.getStatesByCategory(categoryId);
+    public List<GeographyDto> getStates() {
+        return geographyService.getStates();
     }
 
     @RequestMapping(method = RequestMethod.GET, value ="/counties")

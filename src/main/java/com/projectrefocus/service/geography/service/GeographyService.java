@@ -11,6 +11,8 @@ public interface GeographyService {
 
     List<GeographyDto> getGeography(String categoryId, String geographyId);
 
+    List<GeographyDto> getStates();
+
     List<StateDto> getStatesByCategory(String categoryId);
 
     List<CountyDto> getCountiesByCategory(String categoryId, String stateId);

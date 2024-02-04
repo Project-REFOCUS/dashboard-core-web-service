@@ -46,9 +46,6 @@ public class CategoryServiceImpl implements CategoryService {
     public List<CategoryDto> getCategoriesByStates(List<Byte> stateIds) {
         List<CategoryDto> allCategories = getAllCategories();
         Set<String> categories = new HashSet<>();
-        boolean employmentStatusHasAllStates = stateIds.stream().allMatch(id -> {
-            return employmentStatusRepository.doesCategoryIncludeStates(id) != 0;
-        });
         if (stateIds.stream().allMatch(id -> employmentStatusRepository.doesCategoryIncludeStates(id) != 0)) {
             categories.add("Employment Status");
         }
