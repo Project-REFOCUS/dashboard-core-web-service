@@ -6,6 +6,8 @@ import org.hibernate.annotations.FetchMode;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "city")
 public class CityEntity {
@@ -19,9 +21,9 @@ public class CityEntity {
     private String name;
 
     @Fetch(FetchMode.JOIN)
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "county_id")
-    private CountyEntity county;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "county_cities", inverseJoinColumns = @JoinColumn(name = "county_id"), joinColumns = @JoinColumn(name = "city_id"))
+    private List<CountyEntity> counties;
 
     public void setId(Short id) {
         this.id = id;
@@ -39,12 +41,12 @@ public class CityEntity {
         return name;
     }
 
-    public void setCounty(CountyEntity county) {
-        this.county = county;
+    public void setCounties(List<CountyEntity> counties) {
+        this.counties = counties;
     }
 
-    public CountyEntity getCounty() {
-        return county;
+    public List<CountyEntity> getCounties() {
+        return counties;
     }
 
     public CityDto toDto() {

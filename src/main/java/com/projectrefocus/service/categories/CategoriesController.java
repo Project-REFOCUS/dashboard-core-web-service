@@ -4,6 +4,7 @@ import com.projectrefocus.service.categories.dto.CategoryDto;
 import com.projectrefocus.service.categories.service.CategoryService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -19,7 +20,7 @@ public class CategoriesController {
     }
 
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public List<CategoryDto> getCategories() {
-        return categoryService.getAllCategories();
+    public List<CategoryDto> getCategories(@RequestParam(name = "stateIds", required = false) List<Byte> stateIds) {
+        return stateIds == null ? categoryService.getAllCategories() : categoryService.getCategoriesByStates(stateIds);
     }
 }

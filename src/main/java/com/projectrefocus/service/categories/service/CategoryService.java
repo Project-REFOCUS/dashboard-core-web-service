@@ -7,4 +7,6 @@ import java.util.List;
 public interface CategoryService {
 
     List<CategoryDto> getAllCategories();
+
+    List<CategoryDto> getCategoriesByStates(List<Byte> stateId);
 }
