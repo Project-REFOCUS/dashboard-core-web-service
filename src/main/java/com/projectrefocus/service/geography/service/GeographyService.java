@@ -4,18 +4,13 @@ import com.projectrefocus.service.geography.dto.CityDto;
 import com.projectrefocus.service.geography.dto.CountyDto;
 import com.projectrefocus.service.geography.dto.GeographyDto;
 import com.projectrefocus.service.geography.dto.StateDto;
+import com.projectrefocus.service.geography.enums.GeographyType;
 
 import java.util.List;
 
 public interface GeographyService {
 
-    List<GeographyDto> getGeography(String categoryId, String geographyId);
+    List<GeographyDto> getGeography(String categoryId, String geographyId, GeographyType geographyType);
 
     List<GeographyDto> getStates();
-
-    List<StateDto> getStatesByCategory(String categoryId);
-
-    List<CountyDto> getCountiesByCategory(String categoryId, String stateId);
-
-    List<CityDto> getCitiesByCategory(String categoryId, String countyId);
 }

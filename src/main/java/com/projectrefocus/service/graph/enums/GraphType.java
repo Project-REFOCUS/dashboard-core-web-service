@@ -1,4 +1,4 @@
-package com.projectrefocus.service.dundas.enums;
+package com.projectrefocus.service.graph.enums;
 
 public enum GraphType {
     LineChart,

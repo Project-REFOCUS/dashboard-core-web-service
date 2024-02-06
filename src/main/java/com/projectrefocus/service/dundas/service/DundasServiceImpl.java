@@ -8,7 +8,7 @@ import com.projectrefocus.service.dundas.entity.hierarchy.HierarchyMemberRequest
 import com.projectrefocus.service.dundas.entity.metricset.MetricSetParameterHierarchyEntity;
 import com.projectrefocus.service.dundas.entity.metricset.MetricSetRowHierarchyParameterEntity;
 import com.projectrefocus.service.dundas.enums.DashboardFileObjectType;
-import com.projectrefocus.service.dundas.enums.GraphType;
+import com.projectrefocus.service.graph.enums.GraphType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

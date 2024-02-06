@@ -1,5 +1,6 @@
 package com.projectrefocus.service.graph;
 
+import com.projectrefocus.service.geography.enums.GeographyType;
 import com.projectrefocus.service.graph.dto.Graph;
 import com.projectrefocus.service.graph.service.GraphService;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,7 +20,10 @@ public class GraphController {
     }
 
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public List<Graph> getGraphsByCategory(@RequestParam(name = "categoryId") String categoryId) {
-        return this.graphService.getGraphsByCategoryId(categoryId);
+    public List<Graph> getGraphsByCategory(
+            @RequestParam(name = "categoryId") String categoryId,
+            @RequestParam(name = "geographyType", required = false) GeographyType geographyType
+    ) {
+        return this.graphService.getGraphsByCategoryId(categoryId, geographyType);
     }
 }

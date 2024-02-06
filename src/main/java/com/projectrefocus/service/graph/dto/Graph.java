@@ -1,6 +1,6 @@
 package com.projectrefocus.service.graph.dto;
 
-import com.projectrefocus.service.dundas.enums.GraphType;
+import com.projectrefocus.service.graph.enums.GraphType;
 
 public class Graph {
 
