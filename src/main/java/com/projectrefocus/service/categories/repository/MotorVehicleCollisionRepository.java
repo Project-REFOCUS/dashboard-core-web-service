@@ -15,5 +15,5 @@ public interface MotorVehicleCollisionRepository extends JpaRepository<MotorVehi
           "INNER JOIN StateEntity se ON se.id = zecc.state.id " +
           "WHERE se.id = :stateId"
     )
-    Integer doesCategoryIncludeStates(Byte stateId);
+    Integer doesCategoryIncludeState(Byte stateId);
 }
