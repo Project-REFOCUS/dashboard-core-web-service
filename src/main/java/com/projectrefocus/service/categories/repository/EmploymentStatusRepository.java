@@ -15,5 +15,5 @@ public interface EmploymentStatusRepository extends JpaRepository<EmploymentStat
             "INNER JOIN FETCH StateEntity se ON se.id = ce.state.id " +
             "WHERE se.id = :stateId"
     )
-    Integer doesCategoryIncludeStates(Byte stateId);
+    Integer doesCategoryIncludeState(Byte stateId);
 }

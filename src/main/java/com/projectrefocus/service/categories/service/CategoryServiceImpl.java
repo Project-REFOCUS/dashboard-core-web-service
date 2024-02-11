@@ -1,9 +1,7 @@
 package com.projectrefocus.service.categories.service;
 
 import com.projectrefocus.service.categories.dto.CategoryDto;
-import com.projectrefocus.service.categories.repository.EmploymentStatusRepository;
-import com.projectrefocus.service.categories.repository.MotorVehicleCollisionRepository;
-import com.projectrefocus.service.categories.repository.SupplementalNutritionAssistanceProgramRepository;
+import com.projectrefocus.service.categories.repository.*;
 import com.projectrefocus.service.dundas.dto.DashboardFileObject;
 import com.projectrefocus.service.dundas.service.DundasFileService;
 import org.springframework.stereotype.Service;
@@ -16,17 +14,22 @@ import java.util.Set;
 public class CategoryServiceImpl implements CategoryService {
 
     private final DundasFileService dundasFileService;
+    private final CovidCasesRepository covidCasesRepository;
     private final EmploymentStatusRepository employmentStatusRepository;
     private final MotorVehicleCollisionRepository motorVehicleCollisionRepository;
+    private final PopulationEstimateRepository populationEstimateRepository;
     private final SupplementalNutritionAssistanceProgramRepository supplementalNutritionAssistanceProgramRepository;
 
     public CategoryServiceImpl(
             DundasFileService dundasFileService, EmploymentStatusRepository employmentStatusRepository,
-            MotorVehicleCollisionRepository motorVehicleCollisionRepository, SupplementalNutritionAssistanceProgramRepository supplementalNutritionAssistanceProgramRepository
+            MotorVehicleCollisionRepository motorVehicleCollisionRepository, SupplementalNutritionAssistanceProgramRepository supplementalNutritionAssistanceProgramRepository,
+            PopulationEstimateRepository populationEstimateRepository, CovidCasesRepository covidCasesRepository
     ) {
         this.dundasFileService = dundasFileService;
+        this.covidCasesRepository = covidCasesRepository;
         this.employmentStatusRepository = employmentStatusRepository;
         this.motorVehicleCollisionRepository = motorVehicleCollisionRepository;
+        this.populationEstimateRepository = populationEstimateRepository;
         this.supplementalNutritionAssistanceProgramRepository = supplementalNutritionAssistanceProgramRepository;
     }
 
@@ -46,14 +49,20 @@ public class CategoryServiceImpl implements CategoryService {
     public List<CategoryDto> getCategoriesByStates(List<Byte> stateIds) {
         List<CategoryDto> allCategories = getAllCategories();
         Set<String> categories = new HashSet<>();
-        if (stateIds.stream().allMatch(id -> employmentStatusRepository.doesCategoryIncludeStates(id) != 0)) {
+        if (stateIds.stream().allMatch(id -> employmentStatusRepository.doesCategoryIncludeState(id) != 0)) {
             categories.add("Employment Status");
         }
-        if (stateIds.stream().allMatch(id -> motorVehicleCollisionRepository.doesCategoryIncludeStates(id) != 0)) {
+        if (stateIds.stream().allMatch(id -> motorVehicleCollisionRepository.doesCategoryIncludeState(id) != 0)) {
             categories.add("Motor Vehicle Collision");
         }
-        if (stateIds.stream().allMatch(id -> supplementalNutritionAssistanceProgramRepository.doesCategoryIncludeStates(id) != 0)) {
+        if (stateIds.stream().allMatch(id -> supplementalNutritionAssistanceProgramRepository.doesCategoryIncludeState(id) != 0)) {
             categories.add("Supplemental Nutrition Assistance Program");
+        }
+        if (stateIds.stream().allMatch(id -> populationEstimateRepository.doesCategoryIncludeState(id) != 0)) {
+            categories.add("Population Estimates");
+        }
+        if (stateIds.stream().allMatch(id -> covidCasesRepository.doesCategoryIncludeState(id) != 0)) {
+            categories.add("Covid 19 Cases");
         }
         return allCategories.stream().filter(category -> categories.contains(category.getName())).toList();
     }
