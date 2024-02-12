@@ -1,6 +1,7 @@
 package com.projectrefocus.service.graph.service;
 
 import com.projectrefocus.service.dundas.dto.DashboardFileObject;
+import com.projectrefocus.service.dundas.service.DundasInternalService;
 import com.projectrefocus.service.geography.enums.GeographyType;
 import com.projectrefocus.service.graph.enums.GraphType;
 import com.projectrefocus.service.dundas.service.DundasFileService;
@@ -19,9 +20,11 @@ public class GraphServiceImpl implements GraphService {
     private String host;
 
     private final DundasFileService dundasFileService;
+    private final DundasInternalService dundasInternalService;
 
-    public GraphServiceImpl(DundasFileService dundasFileService) {
+    public GraphServiceImpl(DundasFileService dundasFileService, DundasInternalService dundasInternalService) {
         this.dundasFileService = dundasFileService;
+        this.dundasInternalService = dundasInternalService;
     }
 
     public List<Graph> getGraphsByCategoryId(String categoryId, GeographyType geographyType) {
@@ -33,7 +36,7 @@ public class GraphServiceImpl implements GraphService {
         }).map(d -> {
             Graph graph = new Graph();
             GraphType graphType = d.getTags().contains(GraphType.BarChart.name()) ? GraphType.BarChart : GraphType.LineChart;
-            graph.setUrl(String.format("%s/Dashboard/%s", host, d.getId()));
+            graph.setUrl(String.format("%s/Dashboard/%s?sessionId=%s", host, d.getId(), dundasInternalService.getSessionId()));
             graph.setType(graphType);
 
             return graph;

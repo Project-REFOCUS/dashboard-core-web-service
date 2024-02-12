@@ -22,7 +22,7 @@ import static com.projectrefocus.service.dundas.enums.DashboardFileObjectType.Da
 
 
 @Service
-public class DundasServiceImpl implements DundasService, DundasFileService, DundasDashboardService, DundasMetricSetService, DundasHierarchyService {
+public class DundasServiceImpl implements DundasService, DundasInternalService, DundasFileService, DundasDashboardService, DundasMetricSetService, DundasHierarchyService {
 
     @Value("${dundas.api.username}")
     private String username;
@@ -70,6 +70,11 @@ public class DundasServiceImpl implements DundasService, DundasFileService, Dund
         if (!isSessionValid()) {
             login();
         }
+    }
+
+    public String getSessionId() {
+        ensureValidSession();
+        return DundasServiceImpl.SessionId;
     }
 
     private ProjectDetailsResponseEntity getProjectDetails() {

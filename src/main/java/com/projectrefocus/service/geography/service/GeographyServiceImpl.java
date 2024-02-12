@@ -8,6 +8,7 @@ import com.projectrefocus.service.dundas.entity.hierarchy.HierarchyMemberEntity;
 import com.projectrefocus.service.dundas.service.DundasDashboardService;
 import com.projectrefocus.service.dundas.service.DundasFileService;
 import com.projectrefocus.service.dundas.service.DundasHierarchyService;
+import com.projectrefocus.service.dundas.service.DundasInternalService;
 import com.projectrefocus.service.geography.dto.GeographyDto;
 import com.projectrefocus.service.geography.enums.GeographyType;
 import com.projectrefocus.service.geography.repository.StateRepository;
@@ -35,7 +36,7 @@ public class GeographyServiceImpl implements GeographyService {
         List<DashboardFileObject> categoryDashboardFiles = dundasFileService.getDashboardFilesInFolder(categoryId);
         DashboardFileObject fileObject = categoryDashboardFiles.stream()
                 .filter(dashboardFileObject -> geographyType == null || dashboardFileObject.getTags().contains(geographyType.name()))
-                .findFirst().orElseThrow();
+                .findFirst().orElse(categoryDashboardFiles.get(0));
         DashboardDetails dashboardDetails =  dundasDashboardService.getDashboardById(fileObject.getId());
         DashboardDetailsAdapterEntity metricSetAdapter = dashboardDetails.getAdapters().stream().filter(adapter -> !adapter.getMetricSetBindings().isEmpty()).findFirst().orElseThrow();
         DashboardDetailsMetricSetBindingEntity visualizationMetricSet = metricSetAdapter.getMetricSetBindings().stream().findFirst().orElseThrow();
