@@ -8,13 +8,14 @@ import com.projectrefocus.service.dundas.entity.hierarchy.HierarchyMemberEntity;
 import com.projectrefocus.service.dundas.service.DundasDashboardService;
 import com.projectrefocus.service.dundas.service.DundasFileService;
 import com.projectrefocus.service.dundas.service.DundasHierarchyService;
-import com.projectrefocus.service.dundas.service.DundasInternalService;
 import com.projectrefocus.service.geography.dto.GeographyDto;
 import com.projectrefocus.service.geography.enums.GeographyType;
 import com.projectrefocus.service.geography.repository.StateRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class GeographyServiceImpl implements GeographyService {
@@ -32,11 +33,11 @@ public class GeographyServiceImpl implements GeographyService {
         this.dundasHierarchyService = dundasHierarchyService;
     }
 
-    private String getMetricSetIdFromCategory(String categoryId, GeographyType geographyType) {
+    private String getMetricSetIdFromCategory(String categoryId, GeographyType geographyType) throws NoSuchElementException {
         List<DashboardFileObject> categoryDashboardFiles = dundasFileService.getDashboardFilesInFolder(categoryId);
         DashboardFileObject fileObject = categoryDashboardFiles.stream()
                 .filter(dashboardFileObject -> geographyType == null || dashboardFileObject.getTags().contains(geographyType.name()))
-                .findFirst().orElse(categoryDashboardFiles.get(0));
+                .findFirst().orElseThrow();
         DashboardDetails dashboardDetails =  dundasDashboardService.getDashboardById(fileObject.getId());
         DashboardDetailsAdapterEntity metricSetAdapter = dashboardDetails.getAdapters().stream().filter(adapter -> !adapter.getMetricSetBindings().isEmpty()).findFirst().orElseThrow();
         DashboardDetailsMetricSetBindingEntity visualizationMetricSet = metricSetAdapter.getMetricSetBindings().stream().findFirst().orElseThrow();
@@ -54,14 +55,18 @@ public class GeographyServiceImpl implements GeographyService {
     }
 
     public List<GeographyDto> getGeography(String categoryId, String geographyId, GeographyType geographyType) {
-        String metricSetId = getMetricSetIdFromCategory(categoryId, geographyType);
-        List<HierarchyMemberEntity> hierarchyMemberEntities = dundasHierarchyService.getHierarchyMembers(metricSetId, geographyId);
-        return hierarchyMemberEntities.stream().map(member -> {
-            GeographyDto dto = new GeographyDto();
-            dto.setId(member.getUniqueName());
-            dto.setName(member.getCaption());
+        try {
+            String metricSetId = getMetricSetIdFromCategory(categoryId, geographyType);
+            List<HierarchyMemberEntity> hierarchyMemberEntities = dundasHierarchyService.getHierarchyMembers(metricSetId, geographyId);
+            return hierarchyMemberEntities.stream().map(member -> {
+                GeographyDto dto = new GeographyDto();
+                dto.setId(member.getUniqueName());
+                dto.setName(member.getCaption());
 
-            return dto;
-        }).toList();
+                return dto;
+            }).toList();
+        } catch (NoSuchElementException exception) {
+            return new ArrayList<>();
+        }
     }
 }
