@@ -36,7 +36,7 @@ public class GraphServiceImpl implements GraphService {
         }).map(d -> {
             Graph graph = new Graph();
             GraphType graphType = d.getTags().contains(GraphType.BarChart.name()) ? GraphType.BarChart : GraphType.LineChart;
-            graph.setUrl(String.format("%s/Dashboard/%s?sessionId=%s", host, d.getId(), dundasInternalService.getSessionId()));
+            graph.setUrl(String.format("%s/Dashboard/%s?sessionId=%s&vo=viewonly", host, d.getId(), dundasInternalService.getSessionId()));
             graph.setType(graphType);
 
             return graph;
