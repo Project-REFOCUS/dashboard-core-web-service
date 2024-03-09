@@ -8,6 +8,7 @@ import com.projectrefocus.service.dundas.entity.hierarchy.HierarchyMemberRequest
 import com.projectrefocus.service.dundas.entity.metricset.MetricSetParameterHierarchyEntity;
 import com.projectrefocus.service.dundas.entity.metricset.MetricSetRowHierarchyParameterEntity;
 import com.projectrefocus.service.dundas.enums.DashboardFileObjectType;
+import com.projectrefocus.service.geography.enums.GeographyType;
 import com.projectrefocus.service.graph.enums.GraphType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -227,6 +228,17 @@ public class DundasServiceImpl implements DundasService, DundasInternalService, 
         return details;
     }
 
+    public String getMetricSetId(String categoryId, GeographyType geographyType) {
+        List<DashboardFileObject> categoryDashboardFiles = getDashboardFilesInFolder(categoryId);
+        DashboardFileObject fileObject = categoryDashboardFiles.stream()
+                .filter(dashboardFileObject -> geographyType == null || dashboardFileObject.getTags().contains(geographyType.name()))
+                .findFirst().orElseThrow();
+        DashboardDetails dashboardDetails = getDashboardById(fileObject.getId());
+        DashboardDetailsAdapterEntity metricSetAdapter = dashboardDetails.getAdapters().stream().filter(adapter -> !adapter.getMetricSetBindings().isEmpty()).findFirst().orElseThrow();
+        DashboardDetailsMetricSetBindingEntity visualizationMetricSet = metricSetAdapter.getMetricSetBindings().stream().findFirst().orElseThrow();
+        return visualizationMetricSet.getMetricSetId();
+    }
+
     public MetricSetDetails getMetricSetDetails(String metricSetId) {
         ensureValidSession();
 
@@ -241,6 +253,8 @@ public class DundasServiceImpl implements DundasService, DundasInternalService, 
             metricSetHierarchyLevel.setDataSourceId(level.getDataSourceId());
             metricSetHierarchyLevel.setCompatibleUniqueName(level.getCompatibleUniqueName());
             metricSetHierarchyLevel.setUniqueName(level.getUniqueName());
+            metricSetHierarchyLevel.setCaption(level.getCaption());
+            metricSetHierarchyLevel.setLevelDepth(level.getLevelDepth());
 
             return metricSetHierarchyLevel;
         }).toList();

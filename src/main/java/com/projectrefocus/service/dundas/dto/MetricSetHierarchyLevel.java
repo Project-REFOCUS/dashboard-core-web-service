@@ -1,10 +1,21 @@
 package com.projectrefocus.service.dundas.dto;
 
 public class MetricSetHierarchyLevel {
+    private String caption;
     private String uniqueName;
     private String compatibleUniqueName;
     private String hierarchyUniqueName;
     private String dataSourceId;
+
+    private Integer levelDepth;
+
+    public void setCaption(String caption) {
+        this.caption = caption;
+    }
+
+    public String getCaption() {
+        return caption;
+    }
 
     public void setUniqueName(String uniqueName) {
         this.uniqueName = uniqueName;
@@ -36,5 +47,13 @@ public class MetricSetHierarchyLevel {
 
     public String getDataSourceId() {
         return dataSourceId;
+    }
+
+    public void setLevelDepth(Integer levelDepth) {
+        this.levelDepth = levelDepth;
+    }
+
+    public Integer getLevelDepth() {
+        return levelDepth;
     }
 }

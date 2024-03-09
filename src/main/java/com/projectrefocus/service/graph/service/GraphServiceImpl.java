@@ -1,10 +1,11 @@
 package com.projectrefocus.service.graph.service;
 
 import com.projectrefocus.service.dundas.dto.DashboardFileObject;
-import com.projectrefocus.service.dundas.service.DundasInternalService;
+import com.projectrefocus.service.dundas.dto.MetricSetDetails;
+import com.projectrefocus.service.dundas.dto.MetricSetHierarchyLevel;
+import com.projectrefocus.service.dundas.service.*;
 import com.projectrefocus.service.geography.enums.GeographyType;
 import com.projectrefocus.service.graph.enums.GraphType;
-import com.projectrefocus.service.dundas.service.DundasFileService;
 import com.projectrefocus.service.graph.dto.Graph;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -21,13 +22,17 @@ public class GraphServiceImpl implements GraphService {
 
     private final DundasFileService dundasFileService;
     private final DundasInternalService dundasInternalService;
+    private final DundasMetricSetService dundasMetricSetService;
 
-    public GraphServiceImpl(DundasFileService dundasFileService, DundasInternalService dundasInternalService) {
+    public GraphServiceImpl(DundasFileService dundasFileService, DundasInternalService dundasInternalService, DundasMetricSetService dundasMetricSetService) {
         this.dundasFileService = dundasFileService;
+        this.dundasMetricSetService = dundasMetricSetService;
         this.dundasInternalService = dundasInternalService;
     }
 
-    public List<Graph> getGraphsByCategoryId(String categoryId, GeographyType geographyType) {
+    public List<Graph> getGraphsByCategoryId(String categoryId, GeographyType geographyType, List<String> geographyIds) {
+        String metricSetId = dundasMetricSetService.getMetricSetId(categoryId, geographyType);
+        MetricSetDetails metricSetDetails = dundasMetricSetService.getMetricSetDetails(metricSetId);
         List<DashboardFileObject> dashboardFiles = dundasFileService.getDashboardFilesInFolder(categoryId);
         return dashboardFiles.stream().filter(d -> {
             Set<String> tags = new HashSet<>(d.getTags());
@@ -35,8 +40,19 @@ public class GraphServiceImpl implements GraphService {
                     (geographyType == null || tags.contains(geographyType.name()));
         }).map(d -> {
             Graph graph = new Graph();
+            MetricSetHierarchyLevel hierarchyLevel = metricSetDetails.getMetricSetHierarchy().getLevels()
+                    .stream()
+                    .filter(level -> geographyType == null || level.getCaption().equals(geographyType.name())).findFirst().orElse(null);
+
             GraphType graphType = d.getTags().contains(GraphType.BarChart.name()) ? GraphType.BarChart : GraphType.LineChart;
-            graph.setUrl(String.format("%s/Dashboard/%s?sessionId=%s&vo=viewonly", host, d.getId(), dundasInternalService.getSessionId()));
+            StringBuilder query = new StringBuilder();
+            if (hierarchyLevel != null) {
+                query.append(String.format("&$VP_Level=%s", hierarchyLevel.getLevelDepth()));
+            }
+            if (geographyIds != null) {
+                query.append(String.format("&$VP_All3Levels=%s", String.join("|", geographyIds)));
+            }
+            graph.setUrl(String.format("%s/Dashboard/%s?sessionId=%s&vo=viewonly%s", host, d.getId(), dundasInternalService.getSessionId(), query));
             graph.setType(graphType);
 
             return graph;

@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface GraphService {
 
-    List<Graph> getGraphsByCategoryId(String categoryId, GeographyType geographyType);
+    List<Graph> getGraphsByCategoryId(String categoryId, GeographyType geographyType, List<String> geographyIds);
 }

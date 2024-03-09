@@ -8,6 +8,7 @@ public class MetricSetParameterHierarchyLevelEntity {
     private String dataSourceId;
     private String compatibleUniqueName;
     private String caption;
+    private Integer levelDepth;
     private List<MetricSetParameterHierarchyMemberColumnEntity> memberColumns;
 
     public void setUniqueName(String uniqueName) {
@@ -40,6 +41,14 @@ public class MetricSetParameterHierarchyLevelEntity {
 
     public String getCaption() {
         return caption;
+    }
+
+    public void setLevelDepth(Integer levelDepth) {
+        this.levelDepth = levelDepth;
+    }
+
+    public Integer getLevelDepth() {
+        return levelDepth;
     }
 
     public void setDataSourceId(String dataSourceId) {
