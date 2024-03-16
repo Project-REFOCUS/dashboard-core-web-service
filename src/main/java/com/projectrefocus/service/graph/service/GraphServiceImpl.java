@@ -47,10 +47,10 @@ public class GraphServiceImpl implements GraphService {
             GraphType graphType = d.getTags().contains(GraphType.BarChart.name()) ? GraphType.BarChart : GraphType.LineChart;
             StringBuilder query = new StringBuilder();
             if (hierarchyLevel != null && hierarchyLevel.getLevelDepth() != null) {
-                query.append(String.format("&$VP_Level=%s", hierarchyLevel.getLevelDepth()));
+                query.append(String.format("&$geographyType=%s", hierarchyLevel.getLevelDepth()));
             }
             if (geographyIds != null) {
-                query.append(String.format("&$VP_All3Levels=%s", String.join("|", geographyIds)));
+                query.append(String.format("&$geography=%s", String.join("|", geographyIds)));
             }
             graph.setUrl(String.format("%s/Dashboard/%s?sessionId=%s&vo=viewonly%s", host, d.getId(), dundasInternalService.getSessionId(), query));
             graph.setType(graphType);

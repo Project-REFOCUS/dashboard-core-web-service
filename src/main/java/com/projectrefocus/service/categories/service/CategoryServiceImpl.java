@@ -18,18 +18,20 @@ public class CategoryServiceImpl implements CategoryService {
     private final EmploymentStatusRepository employmentStatusRepository;
     private final MotorVehicleCollisionRepository motorVehicleCollisionRepository;
     private final PopulationEstimateRepository populationEstimateRepository;
+    private final PoliceShootingRepository policeShootingRepository;
     private final SupplementalNutritionAssistanceProgramRepository supplementalNutritionAssistanceProgramRepository;
 
     public CategoryServiceImpl(
             DundasFileService dundasFileService, EmploymentStatusRepository employmentStatusRepository,
             MotorVehicleCollisionRepository motorVehicleCollisionRepository, SupplementalNutritionAssistanceProgramRepository supplementalNutritionAssistanceProgramRepository,
-            PopulationEstimateRepository populationEstimateRepository, CovidCasesRepository covidCasesRepository
+            PopulationEstimateRepository populationEstimateRepository, CovidCasesRepository covidCasesRepository, PoliceShootingRepository policeShootingRepository
     ) {
         this.dundasFileService = dundasFileService;
         this.covidCasesRepository = covidCasesRepository;
         this.employmentStatusRepository = employmentStatusRepository;
         this.motorVehicleCollisionRepository = motorVehicleCollisionRepository;
         this.populationEstimateRepository = populationEstimateRepository;
+        this.policeShootingRepository = policeShootingRepository;
         this.supplementalNutritionAssistanceProgramRepository = supplementalNutritionAssistanceProgramRepository;
     }
 
@@ -63,6 +65,9 @@ public class CategoryServiceImpl implements CategoryService {
         }
         if (stateIds.stream().allMatch(id -> covidCasesRepository.doesCategoryIncludeState(id) != 0)) {
             categories.add("Covid 19 Cases");
+        }
+        if (stateIds.stream().allMatch(id -> policeShootingRepository.doesCategoryIncludeState(id) != 0)) {
+            categories.add("Police Shootings");
         }
         return allCategories.stream().filter(category -> categories.contains(category.getName())).toList();
     }
