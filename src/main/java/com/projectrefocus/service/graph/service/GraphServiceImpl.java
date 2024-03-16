@@ -46,8 +46,9 @@ public class GraphServiceImpl implements GraphService {
 
             GraphType graphType = d.getTags().contains(GraphType.BarChart.name()) ? GraphType.BarChart : GraphType.LineChart;
             StringBuilder query = new StringBuilder();
-            if (hierarchyLevel != null && hierarchyLevel.getLevelDepth() != null) {
-                query.append(String.format("&$geographyType=%s", hierarchyLevel.getLevelDepth()));
+            if (hierarchyLevel != null) {
+                Integer levelDepth = hierarchyLevel.getLevelDepth();
+                query.append(String.format("&$geographyType=%s", levelDepth != null ? levelDepth : 0));
             }
             if (geographyIds != null) {
                 query.append(String.format("&$geography=%s", String.join("|", geographyIds)));
