@@ -20,6 +20,9 @@ public class GraphServiceImpl implements GraphService {
     @Value("${dundas.api.host}")
     private String host;
 
+    @Value("${dundas.session.required:true}")
+    private Boolean sessionRequired;
+
     private final DundasFileService dundasFileService;
     private final DundasInternalService dundasInternalService;
     private final DundasMetricSetService dundasMetricSetService;
@@ -53,7 +56,10 @@ public class GraphServiceImpl implements GraphService {
             if (geographyIds != null) {
                 query.append(String.format("&$geography=%s", String.join("|", geographyIds)));
             }
-            graph.setUrl(String.format("%s/Dashboard/%s?sessionId=%s&vo=viewonly%s", host, d.getId(), dundasInternalService.getSessionId(), query));
+            if (sessionRequired) {
+                query.append(String.format("&sessionId=%s", dundasInternalService.getSessionId()));
+            }
+            graph.setUrl(String.format("%s/Dashboard/%s?vo=viewonly%s", host, d.getId(), query));
             graph.setType(graphType);
 
             return graph;
