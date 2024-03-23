@@ -55,7 +55,7 @@ public class CategoryServiceImpl implements CategoryService {
             categories.add("Employment Status");
         }
         if (stateIds.stream().allMatch(id -> motorVehicleCollisionRepository.doesCategoryIncludeState(id) != 0)) {
-            categories.add("Motor Vehicle Collision");
+            categories.add("Motor Vehicle Collisions");
         }
         if (stateIds.stream().allMatch(id -> supplementalNutritionAssistanceProgramRepository.doesCategoryIncludeState(id) != 0)) {
             categories.add("Supplemental Nutrition Assistance Program");
