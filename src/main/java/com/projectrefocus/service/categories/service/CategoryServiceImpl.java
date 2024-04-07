@@ -1,38 +1,27 @@
 package com.projectrefocus.service.categories.service;
 
 import com.projectrefocus.service.categories.dto.CategoryDto;
-import com.projectrefocus.service.categories.repository.*;
 import com.projectrefocus.service.dundas.dto.DashboardFileObject;
 import com.projectrefocus.service.dundas.service.DundasFileService;
+import com.projectrefocus.service.geography.dto.GeographyDto;
+import com.projectrefocus.service.geography.enums.GeographyType;
+import com.projectrefocus.service.geography.service.GeographyInternalService;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
 
     private final DundasFileService dundasFileService;
-    private final CovidCasesRepository covidCasesRepository;
-    private final EmploymentStatusRepository employmentStatusRepository;
-    private final MotorVehicleCollisionRepository motorVehicleCollisionRepository;
-    private final PopulationEstimateRepository populationEstimateRepository;
-    private final PoliceShootingRepository policeShootingRepository;
-    private final SupplementalNutritionAssistanceProgramRepository supplementalNutritionAssistanceProgramRepository;
+    private final GeographyInternalService geographyInternalService;
 
-    public CategoryServiceImpl(
-            DundasFileService dundasFileService, EmploymentStatusRepository employmentStatusRepository,
-            MotorVehicleCollisionRepository motorVehicleCollisionRepository, SupplementalNutritionAssistanceProgramRepository supplementalNutritionAssistanceProgramRepository,
-            PopulationEstimateRepository populationEstimateRepository, CovidCasesRepository covidCasesRepository, PoliceShootingRepository policeShootingRepository
-    ) {
+    public CategoryServiceImpl(DundasFileService dundasFileService, GeographyInternalService geographyInternalService) {
         this.dundasFileService = dundasFileService;
-        this.covidCasesRepository = covidCasesRepository;
-        this.employmentStatusRepository = employmentStatusRepository;
-        this.motorVehicleCollisionRepository = motorVehicleCollisionRepository;
-        this.populationEstimateRepository = populationEstimateRepository;
-        this.policeShootingRepository = policeShootingRepository;
-        this.supplementalNutritionAssistanceProgramRepository = supplementalNutritionAssistanceProgramRepository;
+        this.geographyInternalService = geographyInternalService;
     }
 
     private static CategoryDto toCategoryDto(DashboardFileObject activeDashboardFile) {
@@ -49,26 +38,18 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     public List<CategoryDto> getCategoriesByStates(List<Byte> stateIds) {
+        List<GeographyDto> geographyList = geographyInternalService.getGeographyByIds(stateIds);
         List<CategoryDto> allCategories = getAllCategories();
-        Set<String> categories = new HashSet<>();
-        if (stateIds.stream().allMatch(id -> employmentStatusRepository.doesCategoryIncludeState(id) != 0)) {
-            categories.add("Employment Status");
-        }
-        if (stateIds.stream().allMatch(id -> motorVehicleCollisionRepository.doesCategoryIncludeState(id) != 0)) {
-            categories.add("Motor Vehicle Collisions");
-        }
-        if (stateIds.stream().allMatch(id -> supplementalNutritionAssistanceProgramRepository.doesCategoryIncludeState(id) != 0)) {
-            categories.add("Supplemental Nutrition Assistance Program");
-        }
-        if (stateIds.stream().allMatch(id -> populationEstimateRepository.doesCategoryIncludeState(id) != 0)) {
-            categories.add("Population Estimates");
-        }
-        if (stateIds.stream().allMatch(id -> covidCasesRepository.doesCategoryIncludeState(id) != 0)) {
-            categories.add("Covid 19 Cases");
-        }
-        if (stateIds.stream().allMatch(id -> policeShootingRepository.doesCategoryIncludeState(id) != 0)) {
-            categories.add("Police Shootings");
-        }
-        return allCategories.stream().filter(category -> categories.contains(category.getName())).toList();
+        List<CategoryDto> categories = new ArrayList<>();
+        allCategories.forEach(categoryDto -> {
+            List<GeographyDto> categoryGeographyList = geographyInternalService.getGeography(categoryDto.getId(), null, GeographyType.State);
+            Set<String> categoryNames = categoryGeographyList.stream()
+                    .map(GeographyDto::getName)
+                    .collect(Collectors.toSet());
+            if (categoryNames.containsAll(geographyList.stream().map(GeographyDto::getName).toList())) {
+                categories.add(categoryDto);
+            }
+        });
+        return categories;
     }
 }

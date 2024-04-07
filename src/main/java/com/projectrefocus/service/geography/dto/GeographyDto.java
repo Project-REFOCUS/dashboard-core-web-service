@@ -20,4 +20,17 @@ public class GeographyDto {
     public void setName(String name) {
         this.name = name;
     }
+
+
+    @Override
+    public int hashCode() {
+        return java.util.Objects.hash(id, name);
+    }
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof GeographyDto geographyDto) {
+            return id.equals(geographyDto.getId()) && name.equals(geographyDto.getName());
+        }
+        return false;
+    }
 }

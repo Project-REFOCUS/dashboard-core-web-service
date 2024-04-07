@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
-public class GeographyServiceImpl implements GeographyService {
+public class GeographyServiceImpl implements GeographyService, GeographyInternalService {
 
     private final DundasHierarchyService dundasHierarchyService;
     private final DundasMetricSetService dundasMetricSetService;
@@ -27,6 +27,16 @@ public class GeographyServiceImpl implements GeographyService {
 
     public List<GeographyDto> getStates() {
         return stateRepository.findAll().stream().map(stateEntity -> {
+            GeographyDto dto = new GeographyDto();
+            dto.setId(stateEntity.getId().toString());
+            dto.setName(stateEntity.getName());
+
+            return dto;
+        }).toList();
+    }
+
+    public List<GeographyDto> getGeographyByIds(List<Byte> ids) {
+        return stateRepository.findAllById(ids).stream().map(stateEntity -> {
             GeographyDto dto = new GeographyDto();
             dto.setId(stateEntity.getId().toString());
             dto.setName(stateEntity.getName());
